@@ -1,0 +1,82 @@
+<?php
+
+namespace App\Exports;
+
+use App\Models\AzttData;
+use App\Models\AvromedData;
+use App\Models\AzerimedData;
+use App\Models\EpidbiomedData;
+use App\Models\MainTabletMatrix;
+use App\Models\PashaData;
+use App\Models\RadezData;
+use App\Models\SonarData;
+use App\Models\ZeytunData;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+
+class TabletsExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles
+{
+    use Exportable;
+
+    public $tablets = [0 => [
+        'a' =>'',
+        'tablet_name' => 'Название препората',
+        'avgust' => 'Авг.',
+        'sales_qty' => 'Общее количество продаж',
+        'avgust_sales' => 'Продажи за Авг.',
+        'price_avg' => 'Общее количество продаж',
+    ],1 => [
+        'a' =>'',
+        'tablet_name' => '',
+        'avgust' => '',
+        'sales_qty' => '',
+        'avgust_sales' => ' ',
+        'price_avg' => '',
+    ]];
+
+    public function collection()
+    {
+        $tablets = MainTabletMatrix::all();
+        foreach ($tablets as $tablet) {
+            $tablet_data = [];
+            $tablet_data['a'] = '';
+            $tablet_data['tablet_name'] = $tablet->mainname;
+            $tablet_data['sales_qty'] = 0;
+            $tablet_data['sales_qty'] += AvromedData::where([['tablet_name', '=', $tablet->avromed],['aptek_name', '!=', '']])->sum('sales_qty');
+            $tablet_data['sales_qty'] += AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']])->sum('sales_qty');
+            $tablet_data['sales_qty'] += EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed],['aptek_name', '!=', '']])->sum('sales_qty');
+            $tablet_data['sales_qty'] += AzerimedData::where([['tablet_name', '=', $tablet->azerimed],['aptek_name', '!=', '']])->sum('sales_qty');
+            $tablet_data['sales_qty'] += PashaData::where([['tablet_name', '=', $tablet->pasha],['aptek_name', '!=', '']])->sum('sales_qty');
+            $tablet_data['sales_qty'] += RadezData::where([['tablet_name', '=', $tablet->radez],['aptek_name', '!=', '']])->sum('sales_qty');
+            $tablet_data['sales_qty'] += SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', '']])->sum('sales_qty');
+            $tablet_data['sales_qty'] += ZeytunData::where([['tablet_name', '=', $tablet->zetun],['aptek_name', '!=', '']])->sum('sales_qty');
+            $tablet_data['avgust'] = $tablet_data['sales_qty'];
+            $tablet_data['avgust_sales'] = $tablet->price*$tablet_data['sales_qty'];
+            $tablet_data['price_avg'] = $tablet->price*$tablet_data['sales_qty'];
+            $this->tablets[] = $tablet_data;
+        }
+        return collect($this->tablets);
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        $sheet->getStyle('B1:W2')->getFill()->applyFromArray(['fillType' => 'solid','rotation' => 0, 'color' => ['rgb' => '324ea8'],]);
+        $sheet->getStyle('B1:W2')->getFont()->applyFromArray([
+                'name'      =>  'Calibri',
+                'size'      =>  15,
+                'bold'      =>  true,
+                'color' => ['argb' => 'FFFFFF'],]);
+        $sheet->getStyle('B1:W100')->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ]
+        ]);
+    }
+}
