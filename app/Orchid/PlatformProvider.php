@@ -80,40 +80,40 @@ class PlatformProvider extends OrchidServiceProvider
 
             Menu::make('ADD')
                 ->title('Tablets')
-                ->icon('bs.card-list')
+                ->icon('bs.activity')
                 ->route('tablets.main'),
 
             Menu::make('Avromed')
                 ->title('Companies')
-                ->icon('bs.card-list')
+                ->icon('bs.archive-fill')
                 ->route('company.avromed'),
 
             Menu::make('Azerimed')
-                ->icon('bs.card-list')
+                ->icon('bs.archive-fill')
                 ->route('company.azerimed'),
 
             Menu::make('Aztt')
-                ->icon('bs.card-list')
+                ->icon('bs.archive-fill')
                 ->route('company.aztt'),
 
             Menu::make('Epidbiomed')
-                ->icon('bs.card-list')
+                ->icon('bs.archive-fill')
                 ->route('company.epidbiomed'),
 
             Menu::make('Pasha-K')
-                ->icon('bs.card-list')
+                ->icon('bs.archive-fill')
                 ->route('company.pasha'),
 
             Menu::make('Radez')
-                ->icon('bs.card-list')
+                ->icon('bs.archive-fill')
                 ->route('company.radez'),
 
             Menu::make('Sonar')
-                ->icon('bs.card-list')
+                ->icon('bs.archive-fill')
                 ->route('company.sconar'),
 
             Menu::make('Zeytun')
-                ->icon('bs.card-list')
+                ->icon('bs.archive-fill')
                 ->route('company.zeytun'),
 
 //            Menu::make('Matrix')
