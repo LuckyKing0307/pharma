@@ -11,6 +11,7 @@ use App\Models\PashaData;
 use App\Models\RadezData;
 use App\Models\SonarData;
 use App\Models\ZeytunData;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,24 +26,30 @@ class TabletsExport implements FromCollection, ShouldQueue, ShouldAutoSize, With
     public $tablets = [0 => [
         'a' =>'',
         'tablet_name' => 'Название препората',
-        'avgust' => 'Авг.',
+        'month' => '',
         'sales_qty' => 'Общее количество продаж',
-        'avgust_sales' => 'Продажи за Авг.',
+        'month_sales' => 'Продажи за этот месяц',
         'price_avg' => 'Общее количество продаж',
     ],1 => [
         'a' =>'',
         'tablet_name' => '',
-        'avgust' => '',
         'sales_qty' => '',
-        'avgust_sales' => ' ',
+        'month' => '',
+        'month_sales' => ' ',
         'price_avg' => '',
     ]];
 
     public function collection()
     {
+        Carbon::setLocale('ru');
         $tablets = MainTabletMatrix::all();
         foreach ($tablets as $tablet) {
             $tablet_data = [];
+            $month = AvromedData::where([['tablet_name', '=', $tablet->avromed],['aptek_name', '!=', '']])->orderBy('created_at', 'desc')->first();
+            if ($month){
+                $this->tablets[0]['month_sales'] = 'Продажи за '.$month->created_at->format('F');
+                $this->tablets[0]['month'] = $month->created_at->format('F');
+            }
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['sales_qty'] = 0;
@@ -54,9 +61,9 @@ class TabletsExport implements FromCollection, ShouldQueue, ShouldAutoSize, With
             $tablet_data['sales_qty'] += RadezData::where([['tablet_name', '=', $tablet->radez],['aptek_name', '!=', '']])->sum('sales_qty');
             $tablet_data['sales_qty'] += SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', '']])->sum('sales_qty');
             $tablet_data['sales_qty'] += ZeytunData::where([['tablet_name', '=', $tablet->zetun],['aptek_name', '!=', '']])->sum('sales_qty');
-            $tablet_data['avgust'] = $tablet_data['sales_qty'];
-            $tablet_data['avgust_sales'] = $tablet->price*$tablet_data['sales_qty'];
-            $tablet_data['price_avg'] = $tablet->price*$tablet_data['sales_qty'];
+            $tablet_data['month'] = $tablet_data['sales_qty'];
+            $tablet_data['month_sales'] = $tablet->price*$tablet_data['sales_qty'].'$';
+            $tablet_data['price_avg'] = $tablet->price*$tablet_data['sales_qty'].'$';
             $this->tablets[] = $tablet_data;
         }
         return collect($this->tablets);

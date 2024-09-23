@@ -26,7 +26,7 @@ class ExportScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'ExportScreen';
+        return 'Экспорт Данных';
     }
 
     /**
@@ -37,7 +37,7 @@ class ExportScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make('download')->method('download')->icon('download'),
+//            Button::make('download')->method('download')->icon('download'),
             Link::make('Download')
                 ->href('http://127.0.0.1:8000/export')->icon('download'),
         ];
