@@ -26,7 +26,7 @@ class TabletsExport implements FromCollection, ShouldQueue, ShouldAutoSize, With
     public $tablets = [0 => [
         'a' =>'',
         'tablet_name' => 'Название препората',
-        'month' => '',
+        'month' => 'Продажи количество',
         'sales_qty' => 'Общее количество продаж',
         'month_sales' => 'Продажи за этот месяц',
         'price_avg' => 'Общее количество продаж',
