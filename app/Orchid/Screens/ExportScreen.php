@@ -39,7 +39,7 @@ class ExportScreen extends Screen
         return [
 //            Button::make('download')->method('download')->icon('download'),
             Link::make('Download')
-                ->href(env('APP_FILE_URL').'export')->icon('download'),
+                ->href(env('APP_FILE_URL').'/export')->icon('download'),
         ];
     }
 
