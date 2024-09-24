@@ -101,6 +101,7 @@ Route::screen('sonar', \App\Orchid\Screens\Company\SconarScreen::class)->name('c
 Route::screen('zeytun', \App\Orchid\Screens\Company\ZeytunScreen::class)->name('company.zeytun');
 Route::screen('export', \App\Orchid\Screens\ExportScreen::class)->name('export.export');
 Route::screen('tablets', \App\Orchid\Screens\MainTabletScreen::class)->name('tablets.main');
+Route::screen('region', \App\Orchid\Screens\RegionMatrixScreen::class)->name('region.main');
 
 Route::screen('/examples/form/fields', ExampleFieldsScreen::class)->name('platform.example.fields');
 Route::screen('/examples/form/advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');

@@ -38,12 +38,12 @@ class PlatformProvider extends OrchidServiceProvider
 //                ->icon('bs.book')
 //                ->title('Navigation')
 //                ->route(config('platform.index')),
-//
-//            Menu::make('Sample Screen')
-//                ->icon('bs.collection')
-//                ->route('platform.example')
-//                ->badge(fn () => 6),
-//
+
+            Menu::make('Sample Screen')
+                ->icon('bs.collection')
+                ->route('platform.example')
+                ->badge(fn () => 6),
+
 //            Menu::make('Form Elements')
 //                ->icon('bs.card-list')
 //                ->route('platform.example.fields')
@@ -56,11 +56,11 @@ class PlatformProvider extends OrchidServiceProvider
 //            Menu::make('Grid System')
 //                ->icon('bs.columns-gap')
 //                ->route('platform.example.grid'),
-//
-//            Menu::make('Charts')
-//                ->icon('bs.bar-chart')
-//                ->route('platform.example.charts'),
-//
+
+            Menu::make('Charts')
+                ->icon('bs.bar-chart')
+                ->route('platform.example.charts'),
+
 //            Menu::make('Cards')
 //                ->icon('bs.card-text')
 //                ->route('platform.example.cards')
@@ -82,6 +82,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->title('Tablets')
                 ->icon('bs.activity')
                 ->route('tablets.main'),
+
+            Menu::make('Region')
+                ->icon('bs.building')
+                ->route('region.main'),
 
             Menu::make('Avromed')
                 ->title('Companies')
@@ -116,10 +120,6 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('bs.archive-fill')
                 ->route('company.zeytun'),
 
-//            Menu::make('Matrix')
-//                ->title('Matrix')
-//                ->icon('bs.window-sidebar')
-//                ->route('matrix.matrix'),
             Menu::make('Export Data')
                 ->title('Export')
                 ->icon('bs.window-sidebar')
