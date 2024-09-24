@@ -35,9 +35,6 @@ class RegionMatrixCreate extends Rows
             Input::make('mainname')
                 ->title('Tablet Main Name')
                 ->placeholder('Enter main region name')->required(),
-            Input::make('price')
-                ->title('Tablet price')
-                ->placeholder('Enter price')->required(),
             Relation::make('avromed')
                 ->fromModel(AvromedData::class, 'region_name', 'region_name')
                 ->title('Avromed'),
