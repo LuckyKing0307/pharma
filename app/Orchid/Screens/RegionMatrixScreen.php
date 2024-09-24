@@ -61,9 +61,9 @@ class RegionMatrixScreen extends Screen
         return [
             RegionMatrixList::class,
             Layout::modal('createTablets', RegionMatrixCreate::class)
-                ->title('Create New Supplies')
+                ->title('Create New Region')
                 ->applyButton('Create'),
-            Layout::modal('editTablet', RegionMatrixEdit::class)->async('asyncGetTablet')
+            Layout::modal('Edit Region', RegionMatrixEdit::class)->async('asyncGetTablet')
         ];
     }
 
