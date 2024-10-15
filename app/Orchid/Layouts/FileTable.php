@@ -35,8 +35,7 @@ class FileTable extends Table
                 return $created_at;
             }),
             TD::make('download', 'MESSAGE')->render(function (UploadedFile $file){
-                $link = Attachment::find($file->id)->url();
-                return "<a href='{$link}' target='_blank'>download</a>";
+                return Attachment::find($file->id) ? "<a href=".Attachment::find($file->id)->url()." target='_blank'>download</a>" : 'Удален';
             }),
 
             TD::make('Uploaded', 'uploaded')->render(function (UploadedFile $file){
