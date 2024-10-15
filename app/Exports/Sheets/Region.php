@@ -32,7 +32,6 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
         foreach ($regions as $region) {
             $count = count($this->regions_array[0]);
             $this->regions_array[0][$count] = $region->mainname;
-            info($this->regions_array[0]);
             $tablet_data = [];
             foreach ($tablets as $tablet) {
                 $month = AvromedData::where([['tablet_name', '=', $tablet->avromed],['aptek_name', '!=', '']])->orderBy('created_at', 'desc')->first();
