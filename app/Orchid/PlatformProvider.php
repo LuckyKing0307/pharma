@@ -39,10 +39,10 @@ class PlatformProvider extends OrchidServiceProvider
 //                ->title('Navigation')
 //                ->route(config('platform.index')),
 
-            Menu::make('Sample Screen')
-                ->icon('bs.collection')
-                ->route('platform.example')
-                ->badge(fn () => 6),
+//            Menu::make('Sample Screen')
+//                ->icon('bs.collection')
+//                ->route('platform.example')
+//                ->badge(fn () => 6),
 
 //            Menu::make('Form Elements')
 //                ->icon('bs.card-list')
@@ -57,9 +57,9 @@ class PlatformProvider extends OrchidServiceProvider
 //                ->icon('bs.columns-gap')
 //                ->route('platform.example.grid'),
 
-            Menu::make('Charts')
-                ->icon('bs.bar-chart')
-                ->route('platform.example.charts'),
+//            Menu::make('Charts')
+//                ->icon('bs.bar-chart')
+//                ->route('platform.example.charts'),
 
 //            Menu::make('Cards')
 //                ->icon('bs.card-text')

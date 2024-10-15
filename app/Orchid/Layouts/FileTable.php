@@ -31,7 +31,7 @@ class FileTable extends Table
         return [
             TD::make('id', 'ID'),
             TD::make('uploaded_date', 'Upload date')->render(function (UploadedFile $file){
-                $created_at = $file->uploaded_date ? Carbon::make($file->uploaded_date)->format('d.m.Y') : Carbon::make($file->created_at)->format('d.m.Y');
+                $created_at = $file->uploaded_date ? Carbon::make($file->uploaded_date)->format('F') : Carbon::make($file->created_at)->format('F');
                 return $created_at;
             }),
             TD::make('download', 'MESSAGE')->render(function (UploadedFile $file){
