@@ -30,21 +30,21 @@ class FileTable extends Table
     {
         return [
             TD::make('id', 'ID'),
-            TD::make('uploaded_date', 'Upload date')->render(function (UploadedFile $file){
+            TD::make('uploaded_date', 'День загрузки')->render(function (UploadedFile $file){
                 $created_at = $file->uploaded_date ? Carbon::make($file->uploaded_date)->format('F') : Carbon::make($file->created_at)->format('F');
                 return $created_at;
             }),
-            TD::make('download', 'MESSAGE')->render(function (UploadedFile $file){
+            TD::make('download', 'Скачать')->render(function (UploadedFile $file){
                 return Attachment::find($file->id) ? "<a href=".Attachment::find($file->id)->url()." target='_blank'>download</a>" : 'Удален';
             }),
 
-            TD::make('Uploaded', 'uploaded')->render(function (UploadedFile $file){
+            TD::make('Uploaded', 'Загружен')->render(function (UploadedFile $file){
                 return $file->uploaded ? 'Yes' : 'No';
             }),
-            TD::make('Delete')
+            TD::make('Удалить')
                 ->alignCenter()
                 ->render(function (UploadedFile $file) {
-                    return Button::make('Delete File')
+                    return Button::make('Удалить файл')
                         ->confirm('After deleting, the task will be gone forever.')
                         ->method('delete', ['file' => $file->id]);
                 }),
