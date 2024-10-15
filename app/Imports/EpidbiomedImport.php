@@ -5,11 +5,7 @@ namespace App\Imports;
 use App\Models\EpidbiomedData;
 use App\Models\TabletMatrix;
 use Carbon\Carbon;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Maatwebsite\Excel\Concerns\RemembersRowNumber;
 use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
 class EpidbiomedImport implements ToModel, WithStartRow

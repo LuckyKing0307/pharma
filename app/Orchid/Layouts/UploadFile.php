@@ -25,13 +25,13 @@ class  UploadFile extends Rows
     protected function fields(): iterable
     {
         return [
+            DateTimer::make('date')
+                ->title('Start At')->enableTime()
+                ->required(),
             Upload::make('file')
                 ->title('Upload Photo')
                 ->acceptedFiles('.xlsx,.xls')
                 ->maxFiles(1)
-                ->required(),
-            DateTimer::make('date')
-                ->title('Start At')->enableTime()
                 ->required(),
         ];
     }
