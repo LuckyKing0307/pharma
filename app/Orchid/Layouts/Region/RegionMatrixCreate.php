@@ -47,6 +47,9 @@ class RegionMatrixCreate extends Rows
             Relation::make('sonar')
                 ->fromModel(SonarData::class, 'region_name', 'region_name')
                 ->title('Sonar'),
+            Relation::make('pasha-k')
+                ->fromModel(PashaData::class, 'region_name', 'region_name')
+                ->title('Pasha k'),
             Relation::make('zeytun')
                 ->fromModel(ZeytunData::class, 'region_name', 'region_name')
                 ->title('Zeytun'),
