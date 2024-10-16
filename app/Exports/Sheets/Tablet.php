@@ -148,10 +148,10 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 info($tablet->uploaded_file_id);
                 if ($file->uploaded_date){
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
-                    $data[Carbon::make($file->uploaded_date)->month+20] += $tablet->sales_qty*$data['price'];
+                    $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*intval($data['price']);
                 }else{
                     $data[Carbon::now()->month] += $tablet->sales_qty;
-                    $data[Carbon::now()->month+20] += $tablet->sales_qty*$data['price'];
+                    $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*intval($data['price']);
                 }
             }
         }
