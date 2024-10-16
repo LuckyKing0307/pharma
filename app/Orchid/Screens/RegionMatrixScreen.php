@@ -86,7 +86,7 @@ class RegionMatrixScreen extends Screen
 
     public function update(Request $request)
     {
-        RegionMatrix::find($request->all()['tablet']['id'])->update($request->all()['tablet']);
+        RegionMatrix::find($request->all()['region']['id'])->update($request->all()['region']);
     }
 
     public function delete(RegionMatrix $region)
