@@ -50,9 +50,9 @@ class RegionMatrixCreate extends Rows
             Relation::make('pasha-k')
                 ->fromModel(PashaData::class, 'region_name', 'region_name')
                 ->title('Pasha k'),
-            Relation::make('zeytun')
-                ->fromModel(ZeytunData::class, 'region_name', 'region_name')
-                ->title('Zeytun'),
+//            Relation::make('zeytun')
+//                ->fromModel(ZeytunData::class, 'region_name', 'region_name')
+//                ->title('Zeytun'),
         ];
     }
 }

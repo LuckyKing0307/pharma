@@ -49,8 +49,9 @@ class RegionMatrixEdit extends Rows
             Relation::make('region.pasha-k')
                 ->fromModel(SonarData::class, 'region_name', 'region_name')
                 ->title('Pasha k'),
-            Relation::make('region.zeytun')
-                ->fromModel(ZeytunData::class, 'region_name', 'region_name')
-                ->title('Zeytun'),];
+//            Relation::make('region.zeytun')
+//                ->fromModel(ZeytunData::class, 'region_name', 'region_name')
+//                ->title('Zeytun'),
+            ];
     }
 }

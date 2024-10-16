@@ -34,7 +34,7 @@ class RegionMatrixList extends Table
             TD::make('azerimed', 'Azerimed'),
             TD::make('sonar', 'Sonar'),
             TD::make('pasha-k', 'Pasha K'),
-            TD::make('zeytun', 'Zeytun'),
+//            TD::make('zeytun', 'Zeytun'),
             TD::make('Edit')->render(function (RegionMatrix $regionMatrix){
                 return ModalToggle::make('Edit')
                     ->alignCenter()
