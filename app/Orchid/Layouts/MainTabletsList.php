@@ -36,7 +36,6 @@ class MainTabletsList extends Table
             TD::make('avromed', 'Avromed'),
             TD::make('azerimed', 'Azerimed'),
             TD::make('aztt', 'Aztt'),
-            TD::make('aztt', 'Aztt'),
             TD::make('epidbiomed', 'Epidbiomed'),
             TD::make('pasha-k', 'Pasha k'),
             TD::make('radez', 'Radez'),
