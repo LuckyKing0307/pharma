@@ -123,7 +123,7 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                     $tablet_data['all_sales'] =  $tablet_data['all_sales']+$tablet_data[$i];
                 }
             }
-            $tablet_data['all_sales_price'] = $tablet->price*$tablet_data['all_sales'].'$';
+            $tablet_data['all_sales_price'] = intval($tablet->price)*intval($tablet_data['all_sales']).'$';
             $this->tablets[] = $tablet_data;
         }
         return collect($this->tablets);
