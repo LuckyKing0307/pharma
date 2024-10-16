@@ -13,6 +13,7 @@ class PashaData extends Model
     protected $fillable = [
         'aptek_name',
         'tablet_name',
+        'region_name',
         'qty',
         'sales_qty',
         'ost_qty',

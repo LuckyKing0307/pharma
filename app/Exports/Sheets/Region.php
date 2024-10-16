@@ -46,7 +46,12 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 $tablet_data[$count] += AzerimedData::where([['tablet_name', '=', $tablet->azerimed],['aptek_name', '!=', ''], ['region_name','=',$region->azerimed]])->sum('sales_qty');
                 $tablet_data[$count] += SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', ''], ['region_name','=',$region->sonar]])->sum('sales_qty');
                 $tablet_data[$count] += ZeytunData::where([['tablet_name', '=', $tablet->zetun],['aptek_name', '!=', ''], ['region_name','=',$region->zetun]])->sum('sales_qty');
-                $this->regions_array[] = $tablet_data;
+                if (isset($this->regions_array[$tablet->mainname])){
+                    $this->regions_array[$tablet->mainname][$count] = $tablet_data[$count];
+                }else{
+                    $this->regions_array[$tablet->mainname] = $tablet_data;
+                }
+
             }
         }
 

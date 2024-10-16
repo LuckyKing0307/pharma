@@ -32,6 +32,7 @@ class PashaImport implements ToModel, WithStartRow, WithChunkReading, WithBatchI
             'aptek_name' => $row[1],
             'tablet_name' => $row[0],
             'qty' => $row[4] ? $row[4] : '',
+            'region_name' => $row[2],
             'sales_qty' => $row[3],
             'ost_qty' => $row[5] ? $row[5] : '',
             'uploaded_file_id' => $this->file_id,
