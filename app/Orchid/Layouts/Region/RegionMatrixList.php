@@ -34,22 +34,22 @@ class RegionMatrixList extends Table
             TD::make('azerimed', 'Azerimed'),
             TD::make('sonar', 'Sonar'),
             TD::make('zeytun', 'Zeytun'),
-            TD::make('Edit')->render(function (RegionMatrix $tabletMatrix){
+            TD::make('Edit')->render(function (RegionMatrix $regionMatrix){
                 return ModalToggle::make('Edit')
                     ->alignCenter()
-                    ->modal('editTablet')
+                    ->modal('editregion')
                     ->method('update')
                     ->modalTitle('Edit Tablet')
                     ->asyncParameters([
-                        'tablet' => $tabletMatrix->id
+                        'region' => $regionMatrix->id
                     ]);
             }),
             TD::make('Delete')
                 ->alignCenter()
-                ->render(function (RegionMatrix $tabletMatrix) {
+                ->render(function (RegionMatrix $regionMatrix) {
                     return Button::make('Delete File')
                         ->confirm('After deleting, the task will be gone forever.')
-                        ->method('delete', ['tablet' => $tabletMatrix->id]);
+                        ->method('delete', ['region' => $regionMatrix->id]);
                 }),
         ];
     }

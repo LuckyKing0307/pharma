@@ -29,24 +29,24 @@ class RegionMatrixEdit extends Rows
     protected function fields(): iterable
     {
         return [
-            Input::make('tablet.id')
+            Input::make('region.id')
                 ->hidden(),
-            Input::make('tablet.mainname')
-                ->title('Tablet Main Name')
+            Input::make('region.mainname')
+                ->title('Region Main Name')
                 ->placeholder('Enter main tablet name')->required(),
-            Input::make('tablet.price')
+            Input::make('region.price')
                 ->title('Tablet Price')->value(0)->hidden()
                 ->placeholder('Enter price')->required(),
-            Relation::make('tablet.avromed')
+            Relation::make('region.avromed')
                 ->fromModel(AvromedData::class, 'region_name', 'region_name')
                 ->title('Avromed'),
-            Relation::make('tablet.azerimed')
+            Relation::make('region.azerimed')
                 ->fromModel(AzerimedData::class, 'region_name', 'region_name')
                 ->title('Azerimed'),
-            Relation::make('tablet.sonar')
+            Relation::make('region.sonar')
                 ->fromModel(SonarData::class, 'region_name', 'region_name')
                 ->title('Sonar'),
-            Relation::make('tablet.zeytun')
+            Relation::make('region.zeytun')
                 ->fromModel(ZeytunData::class, 'region_name', 'region_name')
                 ->title('Zeytun'),];
     }

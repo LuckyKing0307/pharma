@@ -63,15 +63,15 @@ class RegionMatrixScreen extends Screen
             Layout::modal('createTablets', RegionMatrixCreate::class)
                 ->title('Create New Region')
                 ->applyButton('Create'),
-            Layout::modal('Edit Region', RegionMatrixEdit::class)->async('asyncGetTablet')
+            Layout::modal('editregion', RegionMatrixEdit::class)->async('asyncGetTablet')
         ];
     }
 
 
-    public function asyncGetTablet(MainTabletMatrix $tablet): array
+    public function asyncGetTablet(RegionMatrix $region): array
     {
         return [
-            'tablet' => $tablet
+            'region' => $region
         ];
     }
 
@@ -89,8 +89,8 @@ class RegionMatrixScreen extends Screen
         RegionMatrix::find($request->all()['tablet']['id'])->update($request->all()['tablet']);
     }
 
-    public function delete(RegionMatrix $tablet)
+    public function delete(RegionMatrix $region)
     {
-        $tablet->delete();
+        $region->delete();
     }
 }

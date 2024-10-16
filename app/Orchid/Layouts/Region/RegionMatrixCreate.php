@@ -33,7 +33,7 @@ class RegionMatrixCreate extends Rows
     {
         return [
             Input::make('mainname')
-                ->title('Tablet Main Name')
+                ->title('Main Region Name')
                 ->placeholder('Enter main region name')->required(),
             Input::make('price')
                 ->title('Tablet price')->value(0)->hidden()
