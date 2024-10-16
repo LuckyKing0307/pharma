@@ -145,7 +145,6 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
         foreach ($tablets->get() as $tablet) {
             $file = UploadedFile::find($tablet->uploaded_file_id);
             if ($file!=null){
-                info($tablet->uploaded_file_id);
                 if ($file->uploaded_date){
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
                     $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*intval($data['price']);
