@@ -4,6 +4,7 @@ namespace App\Orchid\Layouts\Region;
 
 use App\Models\AvromedData;
 use App\Models\AzerimedData;
+use App\Models\PashaData;
 use App\Models\SonarData;
 use App\Models\TabletMatrix;
 use App\Models\ZeytunData;
@@ -47,7 +48,7 @@ class RegionMatrixEdit extends Rows
                 ->fromModel(SonarData::class, 'region_name', 'region_name')
                 ->title('Sonar'),
             Relation::make('region.pasha-k')
-                ->fromModel(SonarData::class, 'region_name', 'region_name')
+                ->fromModel(PashaData::class, 'region_name', 'region_name')
                 ->title('Pasha k'),
 //            Relation::make('region.zeytun')
 //                ->fromModel(ZeytunData::class, 'region_name', 'region_name')
