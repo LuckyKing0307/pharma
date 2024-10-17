@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Exports\Sheets\Others;
 use App\Exports\Sheets\Region;
 use App\Exports\Sheets\Tablet;
 use App\Models\RegionMatrix;
@@ -27,6 +28,7 @@ class TabletsExport implements WithMultipleSheets, ShouldQueue, ShouldAutoSize
         foreach ($regions as $region){
             $sheets[] = new Region($region);
         }
+        $sheets[] = new Others($regions);
 
         return $sheets;
     }
