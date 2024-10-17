@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Exports\Sheets\Region;
 use App\Exports\Sheets\Tablet;
+use App\Models\RegionMatrix;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,7 +23,10 @@ class TabletsExport implements WithMultipleSheets, ShouldQueue, ShouldAutoSize
 
         $sheets[] = new Tablet();
 
-        $sheets[] = new Region();
+        $regions = RegionMatrix::all();
+        foreach ($regions as $region){
+            $sheets[] = new Region($region);
+        }
 
         return $sheets;
     }
