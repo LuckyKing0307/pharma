@@ -78,7 +78,7 @@ class RadezImport implements ToModel,WithStartRow, WithChunkReading, WithBatchIn
 
     public function startRow(): int
     {
-        return 3;
+        return 4;
     }
 
     public function chunkSize(): int

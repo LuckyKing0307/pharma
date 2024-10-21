@@ -29,9 +29,9 @@ class EpidbiomedImport implements ToModel, WithStartRow
         if (strtolower($row[0])!='Итого'){
                 EpidbiomedData::create([
                     'tablet_name' => $row[0],
-                    'qty' => $row[6] ? $row[6] : '',
+                    'qty' => isset($row[6]) ? $row[6] : '',
                     'sales_qty' => $row[5],
-                    'ost_qty' => $row[7] ? $row[7] : '',
+                    'ost_qty' => isset($row[7]) ? $row[7] : '',
                     'uploaded_file_id' => $this->file_id,
                     'uploaded_date' => Carbon::now(),
                 ]);

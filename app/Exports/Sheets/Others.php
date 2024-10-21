@@ -187,8 +187,9 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             }
         }
         foreach ($tablets->get() as $tablet) {
-            $file = UploadedFile::find($tablet->uploaded_file_id);
-            if ($file!=null){
+            $file = UploadedFile::where(['file_id' => $tablet->uploaded_file_id]);
+            if ($file->exists()){
+                $file = $file->get()->first();
                 if ($file->uploaded_date){
                     info(Carbon::make($file->uploaded_date)->month);
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;

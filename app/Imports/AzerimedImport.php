@@ -17,7 +17,7 @@ class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts, Sho
 
     public string $firm = 'azerimed';
     public string $file_id;
-    public int $tabletNameRow = 2;
+    public int $tabletNameRow = 3;
 
     public function __construct($file_id)
     {
@@ -33,8 +33,8 @@ class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts, Sho
                 'region' => $row[1],
                 'region_name' => $row[1],
                 'aptek_name' => $row[0],
-                'tablet_name' => $row[2],
-                'sales_qty' => $row[3],
+                'tablet_name' => $row[3],
+                'sales_qty' => $row[4],
                 'uploaded_file_id' => $this->file_id,
 //                'sale_date' => Carbon::make($row[0]),
                 'uploaded_date' => Carbon::now(),

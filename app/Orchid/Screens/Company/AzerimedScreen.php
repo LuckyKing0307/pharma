@@ -91,7 +91,7 @@ class AzerimedScreen extends Screen
         if ($file->exists()){
             foreach ($file->get() as $file){
                 Excel::import(new AzerimedImport($file->file_id), storage_path($file->file_url));
-                $file->uploaded = 1;
+                $file->uploaded = 0;
                 $file->save();
             }
         }
