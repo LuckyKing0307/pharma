@@ -89,7 +89,7 @@ class ZeytunScreen extends Screen
 
     public function upload(Request $request)
     {
-        $file = UploadedFile::where([['which_depo', '=', 'zeytun'],['uploaded', '=', 0]])->where();
+        $file = UploadedFile::where([['which_depo', '=', 'zeytun'],['uploaded', '=', 0]]);
         if ($file->exists()){
             foreach ($file->get() as $file){
                 info($file->file_id);
