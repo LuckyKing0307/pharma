@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class RadezImport implements ToModel,WithStartRow, WithChunkReading, WithBatchInserts, ShouldQueue
+class RadezImport implements ToModel,WithStartRow, WithChunkReading, WithBatchInserts
 {
 
     public string $firm = 'radez';

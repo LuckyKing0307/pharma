@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatchInserts, ShouldQueue
+class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatchInserts
 {
 
     public string $firm = 'zeytun';
@@ -58,11 +58,6 @@ class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatch
                 $tablet = ZeytunData::where(['aptek_name' => null])->orderBy('created_at', 'desc');
                 if ($tablet->exists()){
                     $tablet = $tablet->first();
-
-
-
-
-
                     ZeytunData::create([
                         'aptek_name' => $row[1],
                         'tablet_name' => $tablet->tablet_name,
