@@ -100,10 +100,10 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $tablet_data = [];
             $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed],['aptek_name', '!=', '']]);
             $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']]);
-            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed],['aptek_name', '!=', '']]);
+            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
             $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed],['aptek_name', '!=', '']]);
             $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha],['aptek_name', '!=', '']]);
-            $radez = RadezData::where([['tablet_name', '=', $tablet->radez],['aptek_name', '!=', '']]);
+            $radez = RadezData::where([['tablet_name', '=', $tablet->radez]]);
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', '']]);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun],['aptek_name', '!=', '']]);
             $tablet_data['a'] = '';
