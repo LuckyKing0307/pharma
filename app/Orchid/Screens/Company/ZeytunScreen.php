@@ -49,7 +49,7 @@ class ZeytunScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make('Upload All Updates')->method('upload')->method('upload'),
+            Button::make('Upload All Updates')->method('upload'),
             ModalToggle::make('Add File')
                 ->modal('uploadFile')
                 ->method('create')
@@ -89,11 +89,12 @@ class ZeytunScreen extends Screen
 
     public function upload(Request $request)
     {
-        $file = UploadedFile::where(['which_depo' => 'zeytun'])->where(['uploaded' => 0]);
+        $file = UploadedFile::where([['which_depo', '=', 'zeytun'],['uploaded', '=', 0]])->where();
         if ($file->exists()){
             foreach ($file->get() as $file){
+                info($file->file_id);
                 Excel::import(new ZeytunImport($file->file_id), storage_path($file->file_url));
-                $file->uploaded = 0;
+                $file->uploaded = 1;
                 $file->save();
             }
         }
