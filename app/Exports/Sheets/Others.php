@@ -147,7 +147,7 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']])->where($notRegionAzzt);
             $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha],['aptek_name', '!=', '']])->where($notRegionPsh);
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', '']])->where($notRegionSon);
-            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidomed]])->where($notRegionEpid);
+            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where($notRegionEpid);
             $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where($notRegionRad);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun],['aptek_name', '!=', '']])->where($notRegionZey);
             $tablet_data['a'] = '';
