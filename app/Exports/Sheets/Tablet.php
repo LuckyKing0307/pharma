@@ -102,10 +102,10 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']]);
             $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
             $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]]);
-            $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha],['aptek_name', '!=', '']]);
+            $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha]]);
             $radez = RadezData::where([['tablet_name', '=', $tablet->radez]]);
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', '']]);
-            $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun],['aptek_name', '!=', '']]);
+            $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]]);
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
@@ -149,10 +149,12 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
-                    $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*intval($data['price']);
+                    $price = str_replace(',', '.', $data['price']);
+                    $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
                 }else{
                     $data[Carbon::now()->month] += $tablet->sales_qty;
-                    $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*intval($data['price']);
+                    $price = str_replace(',', '.', $data['price']);
+                    $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*$price;
                 }
             }
         }
