@@ -21,7 +21,7 @@ class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts, Sho
 
     public function __construct($file_id)
     {
-        $this->file_id= $file_id;
+        $this->file_id = $file_id;
     }
     public function model(array $row)
     {
@@ -36,7 +36,6 @@ class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts, Sho
                 'tablet_name' => $row[3],
                 'sales_qty' => $row[4],
                 'uploaded_file_id' => $this->file_id,
-//                'sale_date' => Carbon::make($row[0]),
                 'uploaded_date' => Carbon::now(),
             ]);
             $tablets = TabletMatrix::where(['avromed' => $row[$this->tabletNameRow]])
