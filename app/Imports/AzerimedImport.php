@@ -38,6 +38,7 @@ class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts, Sho
                 'uploaded_file_id' => $this->file_id,
                 'uploaded_date' => Carbon::now(),
             ]);
+            info($row[3].' '.$row[0]);
             $tablets = TabletMatrix::where(['avromed' => $row[$this->tabletNameRow]])
                 ->orWhere(['azerimed' => $row[$this->tabletNameRow]])
                 ->orWhere(['aztt' => $row[$this->tabletNameRow]])
