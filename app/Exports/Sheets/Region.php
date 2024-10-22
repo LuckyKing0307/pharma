@@ -107,9 +107,9 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
         foreach ($tablets as $tablet) {
             $tablet_data = [];
             $pasha_data = 'pasha-k';
-            $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed],['aptek_name', '!=', ''], ['region_name','=',$region->avromed]]);
-            $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed],['aptek_name', '!=', ''], ['region_name','=',$region->azerimed]]);
-            $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha],['aptek_name', '!=', ''], ['region_name','=',$region->$pasha_data]]);
+            $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed], ['region_name','=',$region->avromed]]);
+            $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed], ['region_name','=',$region->azerimed]]);
+            $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha], ['region_name','=',$region->$pasha_data]]);
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', ''], ['region_name','=',$region->sonar]]);
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;

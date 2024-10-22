@@ -142,14 +142,14 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
         }
         foreach ($tablets as $tablet) {
             $tablet_data = [];
-            $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed],['aptek_name', '!=', '']])->where($notRegionAv);
-            $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed],['aptek_name', '!=', '']])->where($notRegionAz);
+            $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed]])->where($notRegionAv);
+            $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]])->where($notRegionAz);
             $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']])->where($notRegionAzzt);
-            $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha],['aptek_name', '!=', '']])->where($notRegionPsh);
+            $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha]])->where($notRegionPsh);
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', '']])->where($notRegionSon);
             $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where($notRegionEpid);
             $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where($notRegionRad);
-            $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun],['aptek_name', '!=', '']])->where($notRegionZey);
+            $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where($notRegionZey);
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
