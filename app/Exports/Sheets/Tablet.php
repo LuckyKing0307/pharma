@@ -147,10 +147,7 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $file = UploadedFile::where(['file_id' => $tablet->uploaded_file_id]);
             if ($file->exists()){
                 $file = $file->get()->first();
-                if ($file->which_depo=='radez'){
-                    info('Массив');
-                    info($file->uploaded_date);
-                }
+                info($file->which_depo.' '. $file->uploaded_date);
                 if ($file->uploaded_date){
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
                     $price = str_replace(',', '.', $data['price']);
