@@ -33,6 +33,8 @@ class RadezImport implements ToModel,WithStartRow, WithChunkReading, WithBatchIn
             RadezData::create([
                 'tablet_name' => $row[0],
                 'sales_qty' => $row[1],
+                'uploaded_date' => Carbon::now(),
+                'uploaded_file_id' => $this->file_id,
             ]);
             $tablets = TabletMatrix::where(['avromed' => $row[$this->tabletNameRow]])
                 ->orWhere(['azerimed' => $row[$this->tabletNameRow]])
