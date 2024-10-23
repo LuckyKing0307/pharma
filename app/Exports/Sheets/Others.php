@@ -146,10 +146,11 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]])->where($notRegionAz);
             $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']])->where($notRegionAzzt);
             $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha]])->where($notRegionPsh);
-            $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', '']])->where($notRegionSon);
             $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where($notRegionEpid);
-            $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where($notRegionRad)->where('aptek_name',null);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where($notRegionZey)->where('aptek_name', null);
+            $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null)->where($notRegionRad);
+            $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar]])->where($notRegionSon);
+
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;

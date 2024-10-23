@@ -108,16 +108,6 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar]]);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null);
 
-            if ($tablet->id==14){
-                info($avromed->sum('sales_qty'));
-                info($azzt->sum('sales_qty'));
-                info($azerimed->sum('sales_qty'));
-                info($radez->sum('sales_qty'));
-                info($sonar->sum('sales_qty'));
-                info($zeytun->sum('sales_qty'));
-                info($pasha->sum('sales_qty'));
-            }
-
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
