@@ -147,13 +147,13 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $file = UploadedFile::where(['file_id' => $tablet->uploaded_file_id]);
             if ($file->exists()){
                 $file = $file->get()->first();
-                if ($file->which_depo=='radez'){
-                    info('Массив');
-                    info($tablets->get());
-                    info('Массив11');
-                    info($tablet);
-                }
                 if ($file->uploaded_date){
+                    if ($file->which_depo=='radez'){
+                        info('Массив');
+                        info(Carbon::make($file->uploaded_date)->month);
+                        info('Массив11');
+                        info($tablet);
+                    }
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
                     $price = str_replace(',', '.', $data['price']);
                     $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
