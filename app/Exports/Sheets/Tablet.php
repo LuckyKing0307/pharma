@@ -109,10 +109,7 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
 
             if ($tablet->id==21){
                 info($tablet->sonar);
-                info($avromed->sum('sales_qty'));
-                info($azerimed->sum('sales_qty'));
                 info($sonar->toSql());
-                info($zeytun->sum('sales_qty'));
             }
 
             $tablet_data['a'] = '';
