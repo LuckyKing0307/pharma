@@ -149,7 +149,6 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             if ($file->exists()){
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
-                    info(Carbon::make($file->uploaded_date)->month);
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
                     $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*intval($data['price']);
                 }else{

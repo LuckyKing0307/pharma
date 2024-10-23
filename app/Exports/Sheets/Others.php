@@ -148,7 +148,7 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha]])->where($notRegionPsh);
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', '']])->where($notRegionSon);
             $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where($notRegionEpid);
-            $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where($notRegionRad);
+            $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where($notRegionRad)->where('aptek_name',null);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where($notRegionZey);
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
@@ -192,7 +192,6 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             if ($file->exists()){
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
-                    info(Carbon::make($file->uploaded_date)->month);
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
                     $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*intval($data['price']);
                 }else{
