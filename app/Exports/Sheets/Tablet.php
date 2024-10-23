@@ -108,7 +108,7 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null);
 
             if ($tablet->id==21){
-                info('aaaaaaaaaaaaaaaaaaaaaaa');
+                info($tablet->sonar);
                 info($avromed->sum('sales_qty'));
                 info($azerimed->sum('sales_qty'));
                 info($sonar->sum('sales_qty'));
