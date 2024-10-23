@@ -62,11 +62,11 @@ class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts, Sho
 
     public function chunkSize(): int
     {
-        return 1000;
+        return 100;
     }
 
     public function batchSize(): int
     {
-        return 1000;
+        return 100;
     }
 }
