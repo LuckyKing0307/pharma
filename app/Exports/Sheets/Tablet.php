@@ -98,11 +98,12 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
         $tablets = MainTabletMatrix::all();
         foreach ($tablets as $tablet) {
             $tablet_data = [];
+            $pasha_data = 'pasha-k';
             $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed]]);
             $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']]);
             $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
             $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]]);
-            $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha]]);
+            $pasha = PashaData::where([['tablet_name', '=', $tablet->$pasha_data]]);
             $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null);
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar]]);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null);
