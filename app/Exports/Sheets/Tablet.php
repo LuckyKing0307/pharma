@@ -143,13 +143,13 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 $data[$i] = 0;
             }
         }
+        info('Массив');
+        info($tablets->get());
         foreach ($tablets->get() as $tablet) {
             $file = UploadedFile::where(['file_id' => $tablet->uploaded_file_id]);
             if ($file->exists()){
                 $file = $file->get()->first();
                 if ($file->which_depo=='radez'){
-                    info('Массив');
-                    info($tablets->get());
                     info('Массив11');
                     info($tablet);
                 }
