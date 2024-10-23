@@ -28,9 +28,10 @@ class SonarImport implements ToModel, WithStartRow, WithChunkReading, WithBatchI
     */
     public function model(array $row)
     {
+        $tablet_name = str_replace('  ', ' ', $row[0]);
         SonarData::create([
             'aptek_name' => $row[2],
-            'tablet_name' => $row[0],
+            'tablet_name' => $tablet_name,
             'region_name' => $row[1],
             'region' => $row[1],
             'sales_qty' => $row[4],
@@ -38,10 +39,10 @@ class SonarImport implements ToModel, WithStartRow, WithChunkReading, WithBatchI
             'uploaded_date' => Carbon::now(),
         ]);
 
-        $tablets = TabletMatrix::where(['sonar' => $row[$this->tabletNameRow]]);
+        $tablets = TabletMatrix::where(['sonar' => $tablet_name]);
         if (!$tablets->exists()){
             TabletMatrix::create([
-                $this->firm => $row[$this->tabletNameRow],
+                $this->firm => $tablet_name,
             ]);
         }
     }
