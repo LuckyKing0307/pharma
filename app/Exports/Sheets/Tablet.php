@@ -104,11 +104,12 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]]);
             $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha]]);
             $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null);
-            $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar]]);
+            $sonar_tablet = $tablet->sonar;
+            info($sonar_tablet);
+            $sonar = SonarData::where([['tablet_name', '=', $sonar_tablet]]);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null);
 
             if ($tablet->id==21){
-                info($tablet->sonar);
                 info($sonar->toSql());
             }
 
