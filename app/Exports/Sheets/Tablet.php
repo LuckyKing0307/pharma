@@ -107,7 +107,6 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null);
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar]]);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null);
-
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
@@ -126,6 +125,9 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 }
             }
             $price = str_replace(',', '.', $tablet_data['price']);
+            if ($tablet_data['all_sales']>90000){
+                $tablet_data['all_sales'] = 0;
+            }
             $tablet_data['all_sales_price'] = $price*intval($tablet_data['all_sales']).' AZN';
             $this->tablets[] = $tablet_data;
         }
@@ -150,10 +152,16 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             if ($file->exists()){
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
+                    if ($data[Carbon::make($file->uploaded_date)->month]>90000){
+                        $data[Carbon::make($file->uploaded_date)->month] = 0;
+                    }
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
                     $price = str_replace(',', '.', $data['price']);
                     $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
                 }else{
+                    if ($data[Carbon::now()->month]>90000){
+                        $data[Carbon::now()->month] = 0;
+                    }
                     $data[Carbon::now()->month] += $tablet->sales_qty;
                     $price = str_replace(',', '.', $data['price']);
                     $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*$price;
