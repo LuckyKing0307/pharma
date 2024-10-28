@@ -130,6 +130,10 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
             $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+($price*intval($tablet_data['all_sales']));
             $this->tablets[] = $tablet_data;
+            for ($i = 1; $i<=12; $i++){
+                $this->tablets[1][$i] += $tablet_data[$i];
+                $this->tablets[1][$i+20] += $tablet_data[$i+20];
+            }
         }
         return collect($this->tablets);
     }
@@ -155,14 +159,10 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                     $price = str_replace(',', '.', $data['price']);
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
                     $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*intval($price);
-                    $this->tablets[1][Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
-                    $this->tablets[1][Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
                 }else{
                     $price = str_replace(',', '.', $data['price']);
                     $data[Carbon::now()->month] += $tablet->sales_qty;
                     $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*intval($price);
-                    $this->tablets[1][Carbon::now()->month] += $tablet->sales_qty;
-                    $this->tablets[1][Carbon::now()->month+20] += intval($tablet->sales_qty)*$price;
                 }
             }
         }

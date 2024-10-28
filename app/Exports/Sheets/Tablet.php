@@ -133,13 +133,17 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
             $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+($price*intval($tablet_data['all_sales']));
             $this->tablets[] = $tablet_data;
+            for ($i = 1; $i<=12; $i++){
+                $this->tablets[1][$i] += $tablet_data[$i];
+                $this->tablets[1][$i+20] += $tablet_data[$i+20];
+            }
         }
         return collect($this->tablets);
     }
 
     public function getFile($data, $tablets)
     {
-        for ($i = 1; $i <= 12; $i++) {
+        for ($i = 1; $i <= 13; $i++) {
             if (!isset($data[$i])){
                 $data[$i] = 0;
             }
@@ -150,29 +154,22 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 $data[$i] = 0;
             }
         }
+        $price = str_replace(',', '.', $data['price']);
         foreach ($tablets->get() as $tablet) {
             $file = UploadedFile::where(['file_id' => $tablet->uploaded_file_id]);
             if ($file->exists()){
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
+                    $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
+                    $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
                     if ($data[Carbon::make($file->uploaded_date)->month]>90000){
                         $data[Carbon::make($file->uploaded_date)->month] = 0;
-                    }else{
-                        $price = str_replace(',', '.', $data['price']);
-                        $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
-                        $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
-                        $this->tablets[1][Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
-                        $this->tablets[1][Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
                     }
                 }else{
+                    $data[Carbon::now()->month] += $tablet->sales_qty;
+                    $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*$price;
                     if ($data[Carbon::now()->month]>90000){
                         $data[Carbon::now()->month] = 0;
-                    }else{
-                        $price = str_replace(',', '.', $data['price']);
-                        $data[Carbon::now()->month] += $tablet->sales_qty;
-                        $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*$price;
-                        $this->tablets[1][Carbon::now()->month] += $tablet->sales_qty;
-                        $this->tablets[1][Carbon::now()->month+20] += intval($tablet->sales_qty)*$price;
                     }
                 }
             }
