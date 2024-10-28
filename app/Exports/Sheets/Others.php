@@ -144,6 +144,7 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
         foreach ($tablets as $tablet) {
             $tablet_data = [];
             $pasha_data = 'pasha-k';
+
             $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed]])->where($notRegionAv);
             $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']])->where($notRegionAzzt);
             $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where($notRegionEpid);
