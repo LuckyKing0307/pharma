@@ -61,33 +61,34 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
     ],1 => [
         'a' =>'',
         'tablet_name' => '',
-        1 => '',
-        2 => '',
-        3 => '',
-        4 => '',
-        5 => '',
-        6 => '',
-        7 => '',
-        8 => '',
-        9 => '',
-        10 => '',
-        11 => '',
-        12 => '',
-        13 => '',
-        21 => '',
-        22 => '',
-        23 => '',
-        24 => '',
-        25 => '',
-        26 => '',
-        27 => '',
-        28 => '',
-        29 => '',
-        30 => '',
-        31 => '',
-        32 => '',
-        'all_sales' => '',
-        'all_sales_price' => '',
+        'price' => '',
+        1 => 0,
+        2 => 0,
+        3 => 0,
+        4 => 0,
+        5 => 0,
+        6 => 0,
+        7 => 0,
+        8 => 0,
+        9 => 0,
+        10 => 0,
+        11 => 0,
+        12 => 0,
+        13 => 0,
+        21 => 0,
+        22 => 0,
+        23 => 0,
+        24 => 0,
+        25 => 0,
+        26 => 0,
+        27 => 0,
+        28 => 0,
+        29 => 0,
+        30 => 0,
+        31 => 0,
+        32 => 0,
+        'all_sales' => 0,
+        'all_sales_price' => 0,
     ]];
 
     /**
@@ -129,6 +130,8 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 $tablet_data['all_sales'] = 0;
             }
             $tablet_data['all_sales_price'] = $price*intval($tablet_data['all_sales']).' AZN';
+            $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
+            $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+($price*intval($tablet_data['all_sales']));
             $this->tablets[] = $tablet_data;
         }
         return collect($this->tablets);
@@ -154,17 +157,23 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 if ($file->uploaded_date){
                     if ($data[Carbon::make($file->uploaded_date)->month]>90000){
                         $data[Carbon::make($file->uploaded_date)->month] = 0;
+                    }else{
+                        $price = str_replace(',', '.', $data['price']);
+                        $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
+                        $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
+                        $this->tablets[1][Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
+                        $this->tablets[1][Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
                     }
-                    $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
-                    $price = str_replace(',', '.', $data['price']);
-                    $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
                 }else{
                     if ($data[Carbon::now()->month]>90000){
                         $data[Carbon::now()->month] = 0;
+                    }else{
+                        $price = str_replace(',', '.', $data['price']);
+                        $data[Carbon::now()->month] += $tablet->sales_qty;
+                        $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*$price;
+                        $this->tablets[1][Carbon::now()->month] += $tablet->sales_qty;
+                        $this->tablets[1][Carbon::now()->month+20] += intval($tablet->sales_qty)*$price;
                     }
-                    $data[Carbon::now()->month] += $tablet->sales_qty;
-                    $price = str_replace(',', '.', $data['price']);
-                    $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*$price;
                 }
             }
         }

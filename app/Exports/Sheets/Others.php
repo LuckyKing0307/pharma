@@ -62,33 +62,34 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
     ],1 => [
         'a' =>'',
         'tablet_name' => '',
-        1 => '',
-        2 => '',
-        3 => '',
-        4 => '',
-        5 => '',
-        6 => '',
-        7 => '',
-        8 => '',
-        9 => '',
-        10 => '',
-        11 => '',
-        12 => '',
-        13 => '',
-        21 => '',
-        22 => '',
-        23 => '',
-        24 => '',
-        25 => '',
-        26 => '',
-        27 => '',
-        28 => '',
-        29 => '',
-        30 => '',
-        31 => '',
-        32 => '',
-        'all_sales' => '',
-        'all_sales_price' => '',
+        'price' => '',
+        1 => 0,
+        2 => 0,
+        3 => 0,
+        4 => 0,
+        5 => 0,
+        6 => 0,
+        7 => 0,
+        8 => 0,
+        9 => 0,
+        10 => 0,
+        11 => 0,
+        12 => 0,
+        13 => 0,
+        21 => 0,
+        22 => 0,
+        23 => 0,
+        24 => 0,
+        25 => 0,
+        26 => 0,
+        27 => 0,
+        28 => 0,
+        29 => 0,
+        30 => 0,
+        31 => 0,
+        32 => 0,
+        'all_sales' => 0,
+        'all_sales_price' => 0,
     ]];
     public $region;
 
@@ -142,15 +143,15 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
         }
         foreach ($tablets as $tablet) {
             $tablet_data = [];
+            $pasha_data = 'pasha-k';
             $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed]])->where($notRegionAv);
-            $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]])->where($notRegionAz);
             $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']])->where($notRegionAzzt);
-            $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha]])->where($notRegionPsh);
             $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where($notRegionEpid);
-            $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where($notRegionZey)->where('aptek_name', null);
+            $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]])->where($notRegionAz);
+            $pasha = PashaData::where([['tablet_name', '=', $tablet->$pasha_data]])->where($notRegionPsh);
             $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null)->where($notRegionRad);
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar]])->where($notRegionSon);
-
+            $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null)->where($notRegionZey);
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
@@ -170,6 +171,8 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             }
             $price = str_replace(',', '.', $tablet_data['price']);
             $tablet_data['all_sales_price'] = $price*intval($tablet_data['all_sales']).' AZN';
+            $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
+            $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+($price*intval($tablet_data['all_sales']));
             $this->tablets[] = $tablet_data;
         }
         return collect($this->tablets);
@@ -193,11 +196,17 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             if ($file->exists()){
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
+                    $price = str_replace(',', '.', $data['price']);
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
-                    $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*intval($data['price']);
+                    $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*intval($price);
+                    $this->tablets[1][Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
+                    $this->tablets[1][Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
                 }else{
+                    $price = str_replace(',', '.', $data['price']);
                     $data[Carbon::now()->month] += $tablet->sales_qty;
-                    $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*intval($data['price']);
+                    $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*intval($price);
+                    $this->tablets[1][Carbon::now()->month] += $tablet->sales_qty;
+                    $this->tablets[1][Carbon::now()->month+20] += intval($tablet->sales_qty)*$price;
                 }
             }
         }

@@ -4,7 +4,10 @@ namespace App\Orchid\Layouts\Region;
 
 use App\Models\AvromedData;
 use App\Models\AzerimedData;
+use App\Models\AzttData;
+use App\Models\EpidbiomedData;
 use App\Models\PashaData;
+use App\Models\RadezData;
 use App\Models\SonarData;
 use App\Models\TabletMatrix;
 use App\Models\ZeytunData;
@@ -50,9 +53,18 @@ class RegionMatrixEdit extends Rows
             Relation::make('region.pasha-k')
                 ->fromModel(PashaData::class, 'region_name', 'region_name')
                 ->title('Pasha k'),
-//            Relation::make('region.zeytun')
-//                ->fromModel(ZeytunData::class, 'region_name', 'region_name')
-//                ->title('Zeytun'),
+            Relation::make('region.radez')
+                ->fromModel(RadezData::class, 'region_name', 'region_name')
+                ->title('Radez'),
+            Relation::make('region.epidbiomed')
+                ->fromModel(EpidbiomedData::class, 'region_name', 'region_name')
+                ->title('Epidbiomed'),
+            Relation::make('region.aztt')
+                ->fromModel(AzttData::class, 'region_name', 'region_name')
+                ->title('Aztt'),
+            Relation::make('region.zeytun')
+                ->fromModel(ZeytunData::class, 'region_name', 'region_name')
+                ->title('Zeytun'),
             ];
     }
 }
