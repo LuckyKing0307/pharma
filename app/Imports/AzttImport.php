@@ -63,6 +63,7 @@ class AzttImport implements ToModel, WithChunkReading, WithBatchInserts, ShouldQ
                     'sales_qty' => $row[1],
                     'uploaded_date' => Carbon::now(),
                     'uploaded_file_id' => $this->file_id,
+                    'region_name' => '',
                 ]);
             }
         }

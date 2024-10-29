@@ -34,6 +34,7 @@ class EpidbiomedImport implements ToModel, WithStartRow
                     'ost_qty' => isset($row[7]) ? $row[7] : '',
                     'uploaded_file_id' => $this->file_id,
                     'uploaded_date' => Carbon::now(),
+                    'region_name' => '',
                 ]);
             if (strpos(strtolower($row[0]),'mg')){
                 $tablets = TabletMatrix::where(['avromed' => $row[$this->tabletNameRow]])
