@@ -96,6 +96,7 @@ class RadezImport implements ToModel,WithStartRow, WithChunkReading, WithBatchIn
                 ]);
             }
         }
+
     }
 
     public function startRow(): int
