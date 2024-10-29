@@ -36,6 +36,8 @@ class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatch
             ZeytunData::create([
                 'tablet_name' => $row[1],
                 'sales_qty' => $row[2],
+                'uploaded_date' => Carbon::now(),
+                'uploaded_file_id' => $this->file_id,
             ]);
             $tablets = TabletMatrix::where(['avromed' => $row[$this->tabletNameRow]])
                 ->orWhere(['azerimed' => $row[$this->tabletNameRow]])
