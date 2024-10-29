@@ -40,7 +40,7 @@ class AvromedImport implements ToModel, WithChunkReading, WithBatchInserts, Shou
                 'main_parent' => $row[2],
                 'main_supplier' => $row[3],
                 'region' => $row[4],
-                'region_name' => $row[5],
+                'region_name' => $row[5] ? $row[5] : '',
                 'aptek_name' => $row[6],
                 'tablet_name' => $row[7],
                 'supervisor' => $row[8],

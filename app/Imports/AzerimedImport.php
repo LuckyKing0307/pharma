@@ -31,7 +31,7 @@ class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts, Sho
         if (strtolower($row[0])!='müştəri adı' and $row[0]!='' and strtolower($row[3])!='miqdarı'){
             AzerimedData::create([
                 'region' => $row[1],
-                'region_name' => $row[1],
+                'region_name' => $row[1] ? $row[1] : '',
                 'aptek_name' => $row[0],
                 'tablet_name' => $row[3],
                 'sales_qty' => $row[4],

@@ -32,7 +32,7 @@ class SonarImport implements ToModel, WithStartRow, WithChunkReading, WithBatchI
         SonarData::create([
             'aptek_name' => $row[2],
             'tablet_name' => $tablet_name,
-            'region_name' => $row[1],
+            'region_name' => $row[1] ? $row[1] : '',
             'region' => $row[1],
             'sales_qty' => $row[4],
             'uploaded_file_id' => $this->file_id,

@@ -28,7 +28,7 @@ class PashaImport implements ToModel, WithStartRow, WithChunkReading, WithBatchI
     */
     public function model(array $row)
     {
-        $region_name = null;
+        $region_name = '';
         if ($region_name==''){
             if (strpos($row[1],'PASHA-K')!==false){
                 $region_name=str_replace('PASHA-K ','',$row[1]);
