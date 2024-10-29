@@ -22,13 +22,13 @@ class TabletsExport implements WithMultipleSheets, ShouldQueue, ShouldAutoSize
     {
         $sheets = [];
 
-        $sheets[] = new Tablet();
-
+        $tablets = new Tablet();
+        $sheets[] = $tablets;
         $regions = RegionMatrix::all();
         foreach ($regions as $region){
             $sheets[] = new Region($region);
         }
-        $sheets[] = new Others($regions);
+        $sheets[] = new Others($sheets);
 
         return $sheets;
     }

@@ -92,10 +92,11 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
         'all_sales_price' => 0,
     ]];
     public $region;
+    public $tablets_data;
 
-    public function __construct($region)
+    public function __construct($tablets)
     {
-        $this->region = $region;
+        $this->tablets_data = $tablets;
 
     }
     /**
@@ -104,81 +105,26 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
 
     public function collection(): Collection
     {
-        $tablets = MainTabletMatrix::all();
-        $regions = $this->region;
-        $notRegionAv = [];
-        $notRegionAz = [];
-        $notRegionPsh = [];
-        $notRegionSon = [];
-        $notRegionEpid = [];
-        $notRegionRad = [];
-        $notRegionZey = [];
-        $notRegionAzzt = [];
-        foreach ($regions as $region){
-            $pasha_data = 'pasha-k';
-            if ($region->$pasha_data){
-                $notRegionPsh[] = ['region_name','!=',$region->$pasha_data];
-            }
-            if ($region->azerimed){
-                $notRegionAz[] = ['region_name','!=',$region->azerimed];
-            }
-            if ($region->sonar){
-                $notRegionSon[] = ['region_name','!=',$region->sonar];
-            }
-            if ($region->avromed){
-                $notRegionAv[] = ['region_name','!=',$region->avromed];
-            }
-            if ($region->zeytun){
-                $notRegionZey[] = ['region_name','!=',$region->zeytun];
-            }
-            if ($region->aztt){
-                $notRegionAzzt[] = ['region_name','!=',$region->aztt];
-            }
-            if ($region->radez){
-                $notRegionRad[] = ['region_name','!=',$region->radez];
-            }
-            if ($region->epidomed){
-                $notRegionEpid[] = ['region_name','!=',$region->epidomed];
-            }
-        }
-        foreach ($tablets as $tablet) {
-            $tablet_data = [];
-            $pasha_data = 'pasha-k';
-            $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed]])->where($notRegionAv);
-            $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]])->where($notRegionAz);
-            $pasha = PashaData::where([['tablet_name', '=', $tablet->$pasha_data]])->where($notRegionPsh);
-            $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar]])->where($notRegionSon);
-            $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']]);
-            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
-            $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null);
-            $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null);
-            $tablet_data['a'] = '';
-            $tablet_data['tablet_name'] = $tablet->mainname;
-            $tablet_data['price'] = $tablet->price;
-            $tablet_data = $this->getFile($tablet_data, $avromed);
-            $tablet_data = $this->getFile($tablet_data, $azerimed);
-            $tablet_data = $this->getFile($tablet_data, $pasha);
-            $tablet_data = $this->getFile($tablet_data, $sonar);
-            $tablet_data = $this->getFile($tablet_data, $zeytun);
-            $tablet_data = $this->getFile($tablet_data, $radez);
-            $tablet_data = $this->getFile($tablet_data, $azzt);
-            $tablet_data = $this->getFile($tablet_data, $epidbiomed);
-            $tablet_data['all_sales'] = 0;
-            for ($i = 1; $i <= 12; $i++) {
-                if (isset($tablet_data[$i])){
-                    $tablet_data['all_sales'] =  $tablet_data['all_sales']+$tablet_data[$i];
+        $tablets = $this->tablets_data[0]->tablets;
+        foreach ($tablets as $key => $tablet) {
+            $tablet_data = $tablet;
+            if ($key>0){
+                for ($k = 1; $k < count($this->tablets_data); $k++) {
+                    $region =  $this->tablets_data[$k];
+                    for ($i = 1; $i <= 12; $i++) {
+                        $tablet_data[$i] = $tablet_data[$i]-$region->tablets[$key][$i];
+                        $tablet_data[$i+20] = $tablet_data[$i+20]-$region->tablets[$key][$i+20];
+                    }
+                    $tablet_data['all_sales'] = $tablet_data['all_sales']-$region->tablets[$key]['all_sales'];
                 }
             }
             $price = str_replace(',', '.', $tablet_data['price']);
-            $tablet_data['all_sales_price'] = $price*intval($tablet_data['all_sales']).' AZN';
-            $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
-            $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+($price*intval($tablet_data['all_sales']));
-            $this->tablets[] = $tablet_data;
-            for ($i = 1; $i<=12; $i++){
-                $this->tablets[1][$i] += $tablet_data[$i];
-                $this->tablets[1][$i+20] += $tablet_data[$i+20];
-            }
+            $tablet_data['all_sales_price'] = intval($price) * intval($tablet_data['all_sales']);
+            $this->tablets[1]['all_sales_price'] = intval($this->tablets[1]['all_sales_price'])+intval($tablet_data['all_sales_price']);
+            $tablet_data['all_sales_price'] = $tablet_data['all_sales_price'].' AZN';
+            $this->tablets[$key] = $tablet_data;
         }
+
         return collect($this->tablets);
     }
 
