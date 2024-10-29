@@ -15,6 +15,7 @@ class RadezData extends Model
         'tablet_name',
         'sales_qty',
         'uploaded_file_id',
-        'uploaded_date'
+        'uploaded_date',
+        'region_name'
     ];
 }

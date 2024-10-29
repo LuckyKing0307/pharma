@@ -55,17 +55,36 @@ class RadezImport implements ToModel,WithStartRow, WithChunkReading, WithBatchIn
                 }
             }
         }else{
+            $region_name = '';
             if ($row[0]!=''){
+                if (strpos('APTEK', $row[0]) === false){
+                    if (count(explode(' ', $row[0]))>1){
+                        $region_name = explode(' ', $row[0])[1];
+                        if ($region_name=='APTEK'){
+                            $region_name = '';
+                        }
+                    }
+                }
                 $tablet = RadezData::where(['aptek_name' => null])->orderBy('created_at', 'desc')->first();
+
                 RadezData::create([
                     'aptek_name' => $row[0],
                     'tablet_name' => $tablet->tablet_name,
                     'sales_qty' => $row[1],
                     'uploaded_date' => Carbon::now(),
                     'uploaded_file_id' => $this->file_id,
+                    'region_name' => $region_name,
                 ]);
             }
             if ($row[3]!=''){
+                if (strpos('APTEK', $row[3]) === false){
+                    if (count(explode(' ', $row[3]))>1){
+                        $region_name = explode(' ', $row[3])[1];
+                        if ($region_name=='APTEK'){
+                            $region_name = '';
+                        }
+                    }
+                }
                 $tablet = RadezData::where(['aptek_name' => null])->orderBy('created_at', 'desc')->first();
                 RadezData::create([
                     'aptek_name' => $row[3],
@@ -73,6 +92,7 @@ class RadezImport implements ToModel,WithStartRow, WithChunkReading, WithBatchIn
                     'sales_qty' => $row[4],
                     'uploaded_date' => Carbon::now(),
                     'uploaded_file_id' => $this->file_id,
+                    'region_name' => $region_name,
                 ]);
             }
         }

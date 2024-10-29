@@ -144,15 +144,14 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
         foreach ($tablets as $tablet) {
             $tablet_data = [];
             $pasha_data = 'pasha-k';
-
             $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed]])->where($notRegionAv);
-            $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']])->where($notRegionAzzt);
-            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where($notRegionEpid);
             $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]])->where($notRegionAz);
             $pasha = PashaData::where([['tablet_name', '=', $tablet->$pasha_data]])->where($notRegionPsh);
-            $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null)->where($notRegionRad);
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar]])->where($notRegionSon);
-            $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null)->where($notRegionZey);
+            $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']]);
+            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
+            $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null);
+            $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null);
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;

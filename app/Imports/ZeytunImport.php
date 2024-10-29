@@ -54,6 +54,10 @@ class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatch
                 }
             }
         }else{
+            $region_name = '';
+            if (count(explode(' ', $row[1]))>1){
+                $region_name = strtolower(explode(' ', $row[1])[1]);
+            }
             if ($row[1]!='Итог' and $row[1]!=''){
                 $tablet = ZeytunData::where(['aptek_name' => null])->orderBy('created_at', 'desc');
                 if ($tablet->exists()){
@@ -64,6 +68,7 @@ class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatch
                         'sales_qty' => $row[2],
                         'uploaded_date' => Carbon::now(),
                         'uploaded_file_id' => $this->file_id,
+                        'region_name' => $region_name,
                     ]);
                 }
             }

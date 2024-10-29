@@ -28,11 +28,19 @@ class PashaImport implements ToModel, WithStartRow, WithChunkReading, WithBatchI
     */
     public function model(array $row)
     {
+        $region_name = null;
+        if ($region_name==''){
+            if (strpos($row[1],'PASHA-K')!==false){
+                $region_name=str_replace('PASHA-K ','',$row[1]);
+            }else{
+                $region_name = $row[2];
+            }
+        }
         PashaData::create([
             'aptek_name' => $row[1],
             'tablet_name' => $row[0],
             'qty' => $row[4] ? $row[4] : '',
-            'region_name' => $row[2],
+            'region_name' => $region_name,
             'sales_qty' => $row[3],
             'ost_qty' => $row[5] ? $row[5] : '',
             'uploaded_file_id' => $this->file_id,
