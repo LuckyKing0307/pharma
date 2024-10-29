@@ -6,13 +6,15 @@ use App\Models\TabletMatrix;
 use App\Models\ZeytunData;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\RemembersRowNumber;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatchInserts
+class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatchInserts, ShouldQueue
 {
+    use RemembersRowNumber;
 
     public string $firm = 'zeytun';
     public string $file_id;
