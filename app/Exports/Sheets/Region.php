@@ -126,7 +126,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 }
             }
             $price = str_replace(',', '.', $tablet_data['price']);
-            $tablet_data['all_sales_price'] = $price*intval($tablet_data['all_sales']).' AZN';
+            $tablet_data['all_sales_price'] = $price*intval($tablet_data['all_sales']);
             $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
             $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+($price*intval($tablet_data['all_sales']));
             $this->tablets[] = $tablet_data;

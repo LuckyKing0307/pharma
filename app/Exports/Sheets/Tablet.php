@@ -129,7 +129,7 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             if ($tablet_data['all_sales']>90000){
                 $tablet_data['all_sales'] = 0;
             }
-            $tablet_data['all_sales_price'] = $price*intval($tablet_data['all_sales']).' AZN';
+            $tablet_data['all_sales_price'] = $price*intval($tablet_data['all_sales']);
             $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
             $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+($price*intval($tablet_data['all_sales']));
             $this->tablets[] = $tablet_data;

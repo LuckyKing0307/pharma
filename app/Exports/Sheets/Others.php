@@ -121,7 +121,6 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $price = str_replace(',', '.', $tablet_data['price']);
             $tablet_data['all_sales_price'] = intval($price) * intval($tablet_data['all_sales']);
             $this->tablets[1]['all_sales_price'] = intval($this->tablets[1]['all_sales_price'])+intval($tablet_data['all_sales_price']);
-            $tablet_data['all_sales_price'] = $tablet_data['all_sales_price'].' AZN';
             $this->tablets[$key] = $tablet_data;
         }
 
