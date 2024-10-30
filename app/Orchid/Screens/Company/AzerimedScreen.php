@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Company;
 
 use App\Imports\AzerimedImport;
 use App\Models\AzerimedData;
+use App\Models\RegionMatrix;
 use App\Models\UploadedFile;
 use App\Orchid\Layouts\FileTable;
 use App\Orchid\Layouts\UploadFile;
@@ -101,7 +102,24 @@ class AzerimedScreen extends Screen
 
     public function delete(UploadedFile $file)
     {
-        AzerimedData::where(['uploaded_file_id' => $file->id])->delete();
-        $file->delete();
+//        AzerimedData::where(['uploaded_file_id' => $file->id])->delete();
+//        $file->delete();
+        $regions = AzerimedData::all();
+        foreach ($regions as $region){
+            $regio_matrix = RegionMatrix::where(['azerimed' => $region->region_name]);
+            $region_name = explode('|', $region->region_name)[0];
+            if ($region_name=='NERIMANO'){
+                $region_name = 'NARIMAN';
+            }
+
+            if ($regio_matrix->exists()){
+                foreach ($regio_matrix->get() as $regio_m){
+                    $regio_m->azerimed = $region_name;
+                    $regio_m->save();
+                }
+            }
+            $region->region_name = $region_name;
+            $region->save();
+        }
     }
 }
