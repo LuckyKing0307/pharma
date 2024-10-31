@@ -37,23 +37,11 @@ class EpidbiomedImport implements ToModel, WithStartRow
                     'region_name' => '',
                 ]);
             if (strpos(strtolower($row[0]),'mg')){
-                $tablets = TabletMatrix::where(['avromed' => $row[$this->tabletNameRow]])
-                    ->orWhere(['azerimed' => $row[$this->tabletNameRow]])
-                    ->orWhere(['aztt' => $row[$this->tabletNameRow]])
-                    ->orWhere(['epidbiomed' => $row[$this->tabletNameRow]])
-                    ->orWhere(['pasha-k' => $row[$this->tabletNameRow]])
-                    ->orWhere(['radez' => $row[$this->tabletNameRow]])
-                    ->orWhere(['sonar' => $row[$this->tabletNameRow]])
-                    ->orWhere(['zeytun' => $row[$this->tabletNameRow]]);
+                $tablets = TabletMatrix::where(['epidbiomed' => $row[$this->tabletNameRow]]);
                 if (!$tablets->exists()){
                     TabletMatrix::create([
                         $this->firm => $row[$this->tabletNameRow],
                     ]);
-                } elseif ($row[$this->tabletNameRow]!='Name'){
-                    $tablets->get();
-                    foreach ($tablets as $tablet){
-                        $tablet->update([$this->firm => $row[$this->tabletNameRow]]);
-                    }
                 }
             }
         }
