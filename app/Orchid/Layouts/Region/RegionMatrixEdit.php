@@ -53,8 +53,8 @@ class RegionMatrixEdit extends Rows
             Relation::make('region.pasha-k')
                 ->fromModel(PashaData::class, 'region_name', 'region_name')
                 ->title('Pasha k')->nullable(),
-            Input::make('region.radez'),
-            Input::make('region.epidbiomed'),
+            Input::make('region.radez')->title('Radez'),
+            Input::make('region.epidbiomed')->title('Epidbiomed'),
             Relation::make('region.aztt')
                 ->fromModel(AzttData::class, 'region_name', 'region_name')
                 ->title('Aztt')->nullable(),
