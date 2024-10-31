@@ -29,7 +29,7 @@ class RadezImport implements ToModel,WithStartRow, WithChunkReading, WithBatchIn
     */
     public function model(array $row)
     {
-        if ($row[0]!='ЯЩМЯДЛИ ИЛЩАМ АСЛ' and $row[4]=='' and (!str_contains($row['0'], 'АПТЕК') and (str_contains($row['0'], ' АМЛО ') or str_contains($row['0'], 'mq ') or str_contains($row['0'], ' sprey ') or str_contains($row['0'], ' N') or str_contains($row['0'], ' tabl')  or str_contains($row['0'], 'ml ') or str_contains($row['0'], 'mg ') or str_contains($row['0'], 'mg ') or str_contains($row['0'], 'maz ') or str_contains($row['0'], 'krem ') or str_contains($row['0'], ' №')))){
+        if ($row[0]!='ЯЩМЯДЛИ ИЛЩАМ АСЛ' and $row[4]=='' and (!str_contains($row['0'], 'АПТЕК') and (str_contains($row['0'], ' АМЛО ') or str_contains($row['0'], 'mq ') or str_contains($row['0'], ' sprey') or str_contains($row['0'], ' krem') or str_contains($row['0'], ' N') or str_contains($row['0'], ' tabl')  or str_contains($row['0'], 'ml ') or str_contains($row['0'], 'mg ') or str_contains($row['0'], 'mg ') or str_contains($row['0'], 'maz ') or str_contains($row['0'], 'krem ') or str_contains($row['0'], ' №')))){
             RadezData::create([
                 'tablet_name' => $row[0],
                 'sales_qty' => $row[1],
