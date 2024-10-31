@@ -55,12 +55,8 @@ class RegionMatrixCreate extends Rows
             Relation::make('aztt')
                 ->fromModel(AzttData::class, 'region_name', 'region_name')
                 ->title('Aztt'),
-            Relation::make('radez')
-                ->fromModel(RadezData::class, 'region_name', 'region_name')
-                ->title('Radez'),
-            Relation::make('epidbiomed')
-                ->fromModel(EpidbiomedData::class, 'region_name', 'region_name')
-                ->title('Epidbiomed'),
+            Input::make('radez')->title('Radez'),
+            Input::make('epidbiomed')->title('Epidbiomed'),
             Relation::make('zeytun')
                 ->fromModel(ZeytunData::class, 'region_name', 'region_name')
                 ->title('Zeytun'),

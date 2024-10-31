@@ -113,7 +113,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha], ['region_name','=',$region->$pasha_data]]);
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', ''], ['region_name','=',$region->sonar]]);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun],['aptek_name', '!=', ''], ['region_name','=',$region->zeytun]]);
-            $radez = RadezData::where([['tablet_name', '=', $tablet->radez],['aptek_name', '!=', ''], ['region_name','=',$region->radez]]);
+            $radez = RadezData::where([['tablet_name', '=', $tablet->radez],['aptek_name', '!=', ''], ['aptek_name','like',$region->radez]]);
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
