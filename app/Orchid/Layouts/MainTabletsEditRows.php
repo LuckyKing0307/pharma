@@ -44,7 +44,7 @@ class MainTabletsEditRows extends Rows
                 ->title('Aztt'),
             Relation::make('tablet.epidbiomed')
                 ->fromModel(TabletMatrix::class, 'epidbiomed', 'epidbiomed')
-                ->title('Epidbiomed'),
+                ->title('Epidbiomed')->value('tablet.epidbiomed'),
             Relation::make('tablet.pasha-k')
                 ->fromModel(TabletMatrix::class, 'pasha-k', 'pasha-k')
                 ->title('Pasha-k'),
@@ -53,7 +53,7 @@ class MainTabletsEditRows extends Rows
                 ->title('Radez'),
             Relation::make('tablet.sonar')
                 ->fromModel(TabletMatrix::class, 'sonar', 'sonar')
-                ->title('Sonar'),
+                ->title('Sonar')->value('tablet.sonar'),
             Relation::make('tablet.zeytun')
                 ->fromModel(TabletMatrix::class, 'zeytun', 'zeytun')
                 ->title('Zeytun'),
