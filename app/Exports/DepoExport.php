@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports\Sheets;
+namespace App\Exports;
 
 use App\Models\AvromedData;
 use App\Models\AzerimedData;
@@ -9,7 +9,6 @@ use App\Models\EpidbiomedData;
 use App\Models\MainTabletMatrix;
 use App\Models\PashaData;
 use App\Models\RadezData;
-use App\Models\RegionMatrix;
 use App\Models\SonarData;
 use App\Models\UploadedFile;
 use App\Models\ZeytunData;
@@ -23,7 +22,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles, WithTitle
+class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles, WithTitle
 {
     use Exportable;
     public $regions_array = [0=>["a"=>'', 'name'=>'Лекарства']];
@@ -99,26 +98,11 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
         $tablets = MainTabletMatrix::all();
         foreach ($tablets as $tablet) {
             $tablet_data = [];
-            $pasha_data = 'pasha-k';
             $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed]]);
-            $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']]);
-            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
-            $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]]);
-            $pasha = PashaData::where([['tablet_name', '=', $tablet->$pasha_data]]);
-            $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null);
-            $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar]]);
-            $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null);
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
             $tablet_data = $this->getFile($tablet_data, $avromed);
-            $tablet_data = $this->getFile($tablet_data, $azzt);
-            $tablet_data = $this->getFile($tablet_data, $epidbiomed);
-            $tablet_data = $this->getFile($tablet_data, $azerimed);
-            $tablet_data = $this->getFile($tablet_data, $pasha);
-            $tablet_data = $this->getFile($tablet_data, $radez);
-            $tablet_data = $this->getFile($tablet_data, $sonar);
-            $tablet_data = $this->getFile($tablet_data, $zeytun);
             $tablet_data['all_sales'] = 0;
             for ($i = 1; $i <= 12; $i++) {
                 if (isset($tablet_data[$i])){
@@ -161,15 +145,17 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
-                    $data[Carbon::make($file->uploaded_date)->month+20] += floatval($tablet->sales_qty)*$price;
+                    $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
                     if ($data[Carbon::make($file->uploaded_date)->month]>90000){
                         $data[Carbon::make($file->uploaded_date)->month] = 0;
+                        $data[Carbon::make($file->uploaded_date)->month+20] = 0;
                     }
                 }else{
                     $data[Carbon::now()->month] += $tablet->sales_qty;
-                    $data[Carbon::now()->month+20] += floatval($tablet->sales_qty)*$price;
+                    $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*$price;
                     if ($data[Carbon::now()->month]>90000){
                         $data[Carbon::now()->month] = 0;
+                        $data[Carbon::now()->month+20] = 0;
                     }
                 }
             }
@@ -181,7 +167,7 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
      */
     public function title(): string
     {
-        return 'Supplies';
+        return 'Avromed';
     }
 
     public function styles(Worksheet $sheet)
