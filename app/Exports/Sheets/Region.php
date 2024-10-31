@@ -114,10 +114,12 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', ''], ['region_name','=',$region->sonar]]);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun],['aptek_name', '!=', ''], ['region_name','=',$region->zeytun]]);
             $radez = RadezData::where([['tablet_name', '=', $tablet->radez],['aptek_name', '!=', '']])->where('aptek_name', 'like', '%'.$region->radez.'%');
+            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed],['aptek_name', '!=', '']])->where('region_name', 'like', '%'.$region->epidbiomed.'%');
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
             $tablet_data = $this->getFile($tablet_data, $avromed);
+            $tablet_data = $this->getFile($tablet_data, $epidbiomed);
             $tablet_data = $this->getFile($tablet_data, $azerimed);
             $tablet_data = $this->getFile($tablet_data, $pasha);
             $tablet_data = $this->getFile($tablet_data, $sonar);
