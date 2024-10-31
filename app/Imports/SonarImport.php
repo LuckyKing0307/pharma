@@ -39,7 +39,7 @@ class SonarImport implements ToModel, WithStartRow, WithChunkReading, WithBatchI
             'uploaded_date' => Carbon::now(),
         ]);
 
-        $tablets = TabletMatrix::where(['sonar' => $tablet_name]);
+        $tablets = TabletMatrix::where([$this->firm => $tablet_name]);
         if (!$tablets->exists()){
             TabletMatrix::create([
                 $this->firm => $tablet_name,
