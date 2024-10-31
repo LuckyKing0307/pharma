@@ -57,12 +57,12 @@ class RadezImport implements ToModel,WithStartRow, WithChunkReading, WithBatchIn
         }else{
             $region_name = '';
             if ($row[0]!=''){
-                if (strpos('APTEK', $row[0]) === false){
-                    if (count(explode(' ', $row[0]))>1){
-                        $region_name = explode(' ', $row[0])[1];
-                        if ($region_name=='APTEK'){
-                            $region_name = '';
-                        }
+                $region_names = explode(' ', $row[0]);
+                if (count($region_names)>1){
+                    if (isset($region_names[1]) and $region_names[1]=='APTEK'){
+                        $region_name = isset($region_names[1])?$region_names[1]:'';
+                    }else{
+                        $region_name = isset($region_names[2])?$region_names[2]:'';
                     }
                 }
                 $tablet = RadezData::where(['aptek_name' => null])->orderBy('created_at', 'desc')->first();
@@ -77,12 +77,12 @@ class RadezImport implements ToModel,WithStartRow, WithChunkReading, WithBatchIn
                 ]);
             }
             if ($row[3]!=''){
-                if (strpos('APTEK', $row[3]) === false){
-                    if (count(explode(' ', $row[3]))>1){
-                        $region_name = explode(' ', $row[3])[1];
-                        if ($region_name=='APTEK'){
-                            $region_name = '';
-                        }
+                if (count(explode(' ', $row[3]))>1){
+                    $region_names = explode(' ', $row[3]);
+                    if (isset($region_names[1]) and $region_names[1]=='APTEK'){
+                        $region_name = isset($region_names[1])?$region_names[1]:'';
+                    }else{
+                        $region_name = isset($region_names[2])?$region_names[2]:'';
                     }
                 }
                 $tablet = RadezData::where(['aptek_name' => null])->orderBy('created_at', 'desc')->first();
