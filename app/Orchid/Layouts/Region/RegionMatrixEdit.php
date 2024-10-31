@@ -39,7 +39,7 @@ class RegionMatrixEdit extends Rows
                 ->title('Region Main Name')
                 ->placeholder('Enter main tablet name')->required(),
             Input::make('region.price')
-                ->title('Tablet Price')->value(0)->hidden()
+                ->title('Region Price')->value(0)->hidden()
                 ->placeholder('Enter price')->required(),
             Relation::make('region.avromed')
                 ->fromModel(AvromedData::class, 'region_name', 'region_name')

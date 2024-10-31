@@ -44,7 +44,7 @@ class RegionMatrixList extends Table
                     ->alignCenter()
                     ->modal('editregion')
                     ->method('update')
-                    ->modalTitle('Edit Tablet')
+                    ->modalTitle('Edit Region')
                     ->asyncParameters([
                         'region' => $regionMatrix->id
                     ]);
