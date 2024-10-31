@@ -69,7 +69,6 @@ class MainTabletScreen extends Screen
 
     public function asyncGetTablet(MainTabletMatrix $tablet): array
     {
-        dd($tablet);
         return [
             'tablet' => $tablet
         ];
