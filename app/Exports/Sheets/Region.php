@@ -114,17 +114,31 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', ''], ['region_name','=',$region->sonar]]);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun],['aptek_name', '!=', ''], ['region_name','=',$region->zeytun]]);
             $radez = RadezData::where([['tablet_name', '=', $tablet->radez],['aptek_name', '!=', '']])->where('aptek_name', 'like', '%'.$region->radez.'%');
-            $epidbiomed = EpidbiomedData::where([['aptek_name', '!=', '']])->where('region_name', 'like', '%'.$region->epidbiomed.'%');
+            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where('region_name', 'like', '%'.$region->epidbiomed.'%');
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
-            $tablet_data = $this->getFile($tablet_data, $avromed);
-            $tablet_data = $this->getFile($tablet_data, $epidbiomed);
-            $tablet_data = $this->getFile($tablet_data, $azerimed);
-            $tablet_data = $this->getFile($tablet_data, $pasha);
-            $tablet_data = $this->getFile($tablet_data, $sonar);
-            $tablet_data = $this->getFile($tablet_data, $zeytun);
-            $tablet_data = $this->getFile($tablet_data, $radez);
+            if ($region->avromed){
+                $tablet_data = $this->getFile($tablet_data, $avromed);
+            }
+            if ($region->azerimed){
+                $tablet_data = $this->getFile($tablet_data, $azerimed);
+            }
+            if ($region->epidbiomed){
+                $tablet_data = $this->getFile($tablet_data, $epidbiomed);
+            }
+            if ($region->$pasha_data){
+                $tablet_data = $this->getFile($tablet_data, $pasha);
+            }
+            if ($region->sonar){
+                $tablet_data = $this->getFile($tablet_data, $sonar);
+            }
+            if ($region->zeytun){
+                $tablet_data = $this->getFile($tablet_data, $zeytun);
+            }
+            if ($region->radez){
+                $tablet_data = $this->getFile($tablet_data, $radez);
+            }
             $tablet_data['all_sales'] = 0;
             for ($i = 1; $i <= 12; $i++) {
                 if (isset($tablet_data[$i])){

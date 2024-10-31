@@ -7,3 +7,4 @@ Route::get('/', function () {
 });
 
 Route::get('export', [\App\Http\Controllers\ExportController::class, 'export']);
+Route::get('avromed', [\App\Http\Controllers\ExportController::class, 'avromed']);

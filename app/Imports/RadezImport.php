@@ -66,7 +66,7 @@ class RadezImport implements ToModel,WithStartRow, WithChunkReading, WithBatchIn
                         $region_name = isset($region_names[2])?$region_names[2]:'';
                     }
                 }
-                $tablet = RadezData::where(['aptek_name' => null])->orderBy('created_at', 'desc')->first();
+                $tablet = RadezData::where(['aptek_name' => null])->orderBy('id', 'desc')->first();
 
                 RadezData::create([
                     'aptek_name' => $row[0],

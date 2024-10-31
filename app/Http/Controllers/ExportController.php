@@ -14,4 +14,10 @@ class ExportController extends Controller
         $day = Carbon::now()->format('Y-m-d');
         return Excel::download(new TabletsExport, $day.'.xlsx');
     }
+
+    public function avromed()
+    {
+        $day = Carbon::now()->format('Y-m-d');
+        return Excel::download(new TabletsExport, $day.'.xlsx');
+    }
 }
