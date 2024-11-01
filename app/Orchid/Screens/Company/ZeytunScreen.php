@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Company;
 
 use App\Imports\SonarImport;
 use App\Imports\ZeytunImport;
+use App\Models\RegionMatrix;
 use App\Models\SonarData;
 use App\Models\UploadedFile;
 use App\Models\ZeytunData;
@@ -102,14 +103,13 @@ class ZeytunScreen extends Screen
 
     public function delete(UploadedFile $file)
     {
-        $datas = ZeytunData::all();
+        $datas = RegionMatrix::all();
         foreach ($datas as $data){
-            $region_name = $data->region_name;
-
+            $region_name = $data->zeytun;
             $region_name = str_replace('ı', 'i', $region_name);
             $region_name = str_replace('Ə', 'a', $region_name);
             $region_name = str_replace('İ', 'a', $region_name);
-            $data->region_name = $region_name;
+            $data->zeytun = $region_name;
             $data->save();
         }
     }
