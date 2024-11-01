@@ -63,6 +63,7 @@ class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatch
                 $region_name = strtolower(explode(' ', $row[1])[1]);
                 $region_name = str_replace('ı', 'i', $region_name);
                 $region_name = str_replace('Ə', 'a', $region_name);
+                $region_name = str_replace('İ', 'a', $region_name);
             }
             if ($row[1]!='Итог' and $row[1]!=''){
                 $tablet = ZeytunData::where(['aptek_name' => null])->orderBy('created_at', 'desc');

@@ -108,7 +108,7 @@ class ZeytunScreen extends Screen
 
             $region_name = str_replace('ı', 'i', $region_name);
             $region_name = str_replace('Ə', 'a', $region_name);
-
+            $region_name = str_replace('İ', 'a', $region_name);
             $data->region_name = $region_name;
             $data->save();
         }
