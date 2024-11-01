@@ -102,7 +102,15 @@ class ZeytunScreen extends Screen
 
     public function delete(UploadedFile $file)
     {
-        ZeytunData::where(['uploaded_file_id' => $file->id])->delete();
-        $file->delete();
+        $datas = ZeytunData::all();
+        foreach ($datas as $data){
+            $region_name = $data->region_name;
+
+            $region_name = str_replace('ı', 'i', $region_name);
+            $region_name = str_replace('Ə', 'a', $region_name);
+
+            $data->region_name = $region_name;
+            $data->save();
+        }
     }
 }
