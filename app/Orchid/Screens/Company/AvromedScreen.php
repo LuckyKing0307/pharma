@@ -104,7 +104,10 @@ class AvromedScreen extends Screen
 
     public function delete(UploadedFile $file)
     {
-        AvromedData::where(['uploaded_file_id' => $file->id])->delete();
-        $file->delete();
+        $data = AvromedData::where(['region_name' => null]);
+        foreach ($data->get() as $item) {
+            $item->region_name = $item->region;
+            $item->save();
+        }
     }
 }
