@@ -44,7 +44,7 @@ class RegionMatrixEdit extends Rows
                 ->fromModel(AvromedData::class, 'region_name', 'region_name')
                 ->title('Avromed')->nullable(),
             Relation::make('region.avromed_extra')
-                ->fromModel(AvromedData::class, 'main_partner', 'main_partner')
+                ->fromModel(AvromedData::class, 'main_parent', 'main_parent')
                 ->title('Avromed C')->nullable(),
             Relation::make('region.azerimed')
                 ->fromModel(AzerimedData::class, 'region_name', 'region_name')
