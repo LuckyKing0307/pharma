@@ -42,6 +42,9 @@ class RegionMatrixCreate extends Rows
             Relation::make('avromed')
                 ->fromModel(AvromedData::class, 'region_name', 'region_name')
                 ->title('Avromed'),
+            Relation::make('avromed_extra')
+                ->fromModel(AvromedData::class, 'main_partner', 'main_partner')
+                ->title('Avromed С'),
             Relation::make('azerimed')
                 ->fromModel(AzerimedData::class, 'region_name', 'region_name')
                 ->title('Azerimed'),

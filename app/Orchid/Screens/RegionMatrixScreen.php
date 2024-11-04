@@ -80,13 +80,22 @@ class RegionMatrixScreen extends Screen
         $supply = $request->all();
         unset($supply['_token']);
         unset($supply['_state']);
+        if (isset($supply['avromed_extra']) and $supply['avromed_extra']!='') {
+            $supply['avromed'] = $supply['avromed_extra'];
+            unset($supply['avromed_extra']);
+        }
         $tab = new RegionMatrix($supply);
         $tab->save();
     }
 
     public function update(Request $request)
     {
-        RegionMatrix::find($request->all()['region']['id'])->update($request->all()['region']);
+        $data = $request->all()['region'];
+        if (isset($data['avromed_extra']) and $data['avromed_extra']!='') {
+            $data['avromed'] = $data['avromed_extra'];
+            unset($data['avromed_extra']);
+        }
+        RegionMatrix::find($data['id'])->update($data);
     }
 
     public function delete(RegionMatrix $region)
