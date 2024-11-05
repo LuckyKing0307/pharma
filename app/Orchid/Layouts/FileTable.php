@@ -34,9 +34,9 @@ class FileTable extends Table
                 $created_at = $file->uploaded_date ? Carbon::make($file->uploaded_date)->format('F') : Carbon::make($file->created_at)->format('F');
                 return $created_at;
             }),
-            TD::make('download', 'Скачать')->render(function (UploadedFile $file){
-                return Attachment::find($file->id) ? "<a href=".Attachment::find($file->id)->url()." target='_blank'>download</a>" : 'Удален';
-            }),
+//            TD::make('download', 'Скачать')->render(function (UploadedFile $file){
+//                return Attachment::find($file->id) ? "<a href=".Attachment::find($file->id)->url()." target='_blank'>download</a>" : 'Удален';
+//            }),
 
             TD::make('Uploaded', 'Загружен')->render(function (UploadedFile $file){
                 return $file->uploaded ? 'Yes' : 'No';

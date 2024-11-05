@@ -36,7 +36,7 @@ class SconarScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Sconar Upload File';
+        return 'Sonar Upload File';
     }
 
     /**
