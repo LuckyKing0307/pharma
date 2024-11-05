@@ -4,16 +4,22 @@ namespace App\Imports;
 
 use App\Models\AvromedData;
 use App\Models\TabletMatrix;
+use App\Models\UploadedFile;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\RemembersRowNumber;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterImport;
+use Maatwebsite\Excel\Facades\Excel;
 
-class AvromedImport implements ToModel, WithChunkReading, WithBatchInserts, ShouldQueue
+class AvromedImport implements ToModel, WithChunkReading, WithBatchInserts, ShouldQueue,WithEvents
 {
-    use RemembersRowNumber;
+    use RemembersRowNumber, Importable, RegistersEventListeners;
 
     public string $firm = 'avromed';
     public string $file_id;
@@ -81,5 +87,15 @@ class AvromedImport implements ToModel, WithChunkReading, WithBatchInserts, Shou
     public function batchSize(): int
     {
         return 100;
+    }
+    public static function afterImport(AfterImport $event)
+    {
+        $file = UploadedFile::where(['which_depo' => 'avromed'])->where(['uploaded' => 0]);
+        if ($file->exists()){
+            foreach ($file->get() as $file){
+                $file->uploaded = 1;
+                $file->save();
+            }
+        }
     }
 }
