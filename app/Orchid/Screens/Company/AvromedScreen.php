@@ -96,7 +96,6 @@ class AvromedScreen extends Screen
         if ($file->exists()){
             foreach ($file->get() as $file){
                 Excel::import(new AvromedImport($file->file_id), storage_path($file->file_url));
-
             }
         }
     }
