@@ -39,10 +39,10 @@ class PashaImport implements ToModel, WithStartRow, WithChunkReading, WithBatchI
         PashaData::create([
             'aptek_name' => $row[1],
             'tablet_name' => $row[0],
-            'qty' => $row[4] ? $row[4] : '',
+            'qty' => isset($row[4]) ? $row[4] : '',
             'region_name' => $region_name,
             'sales_qty' => $row[3],
-            'ost_qty' => $row[5] ? $row[5] : '',
+            'ost_qty' => isset($row[5]) ? $row[5] : '',
             'uploaded_file_id' => $this->file_id,
             'uploaded_date' => Carbon::now(),
         ]);
