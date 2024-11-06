@@ -22,7 +22,7 @@ class RegionMatrixScreen extends Screen
     public function query(): iterable
     {
         return [
-            'regions' => RegionMatrix::paginate(10),
+            'regions' => RegionMatrix::paginate(100),
         ];
     }
 
