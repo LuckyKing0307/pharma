@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class AzttImport implements ToModel, WithChunkReading, WithBatchInserts, ShouldQueue
+class AzttImport implements ToModel, WithChunkReading, WithBatchInserts
 {
     use RemembersRowNumber;
 

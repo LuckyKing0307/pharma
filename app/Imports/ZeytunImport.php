@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatchInserts, ShouldQueue
+class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatchInserts
 {
     use RemembersRowNumber;
 
