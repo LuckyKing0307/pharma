@@ -102,7 +102,7 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $pasha_data = 'pasha-k';
             $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed]]);
             $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']]);
-            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
+            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where('region_name', null);
             $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]]);
             $pasha = PashaData::where([['tablet_name', '=', $tablet->$pasha_data]]);
             $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null);

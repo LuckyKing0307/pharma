@@ -124,7 +124,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
             if (is_array(json_decode($region->epidbiomed,1))){
                 foreach (json_decode($region->epidbiomed,1) as $epid_aptek){
-                    $epidbiomed = $epidbiomed->orWhere([['tablet_name', '=', $tablet->epidbiomed],['aptek_name', '=', $epid_aptek]]);
+                    $epidbiomed = $epidbiomed->orWhere([['tablet_name', '=', $tablet->epidbiomed],['region_name', '=', $epid_aptek]]);
                 }
             }else{
                 $epidbiomed = $epidbiomed->where('region_name', 'like', '%'.$region->epidbiomed.'%');
