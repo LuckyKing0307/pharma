@@ -21,7 +21,7 @@ class MainTabletScreen extends Screen
     public function query(): iterable
     {
         return [
-            'tablets' => MainTabletMatrix::paginate(100),
+            'tablets' => MainTabletMatrix::paginate(10),
         ];
     }
 
