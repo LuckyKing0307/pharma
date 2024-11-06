@@ -47,14 +47,7 @@ class PashaImport implements ToModel, WithStartRow
             'uploaded_date' => Carbon::now(),
         ]);
 
-        $tablets = TabletMatrix::where(['avromed' => $row[$this->tabletNameRow]])
-            ->orWhere(['azerimed' => $row[$this->tabletNameRow]])
-            ->orWhere(['aztt' => $row[$this->tabletNameRow]])
-            ->orWhere(['epidbiomed' => $row[$this->tabletNameRow]])
-            ->orWhere(['pasha-k' => $row[$this->tabletNameRow]])
-            ->orWhere(['radez' => $row[$this->tabletNameRow]])
-            ->orWhere(['sonar' => $row[$this->tabletNameRow]])
-            ->orWhere(['zeytun' => $row[$this->tabletNameRow]]);
+        $tablets = TabletMatrix::where(['pasha-k' => $row[$this->tabletNameRow]]);
         if (!$tablets->exists()){
             TabletMatrix::create([
                 $this->firm => $row[$this->tabletNameRow],
