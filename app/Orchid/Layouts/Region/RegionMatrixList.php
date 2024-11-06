@@ -35,12 +35,8 @@ class RegionMatrixList extends Table
             TD::make('sonar', 'Sonar'),
             TD::make('pasha-k', 'Pasha K'),
             TD::make('aztt', 'Aztt'),
-            TD::make('radez', 'Radez')->render(function (RegionMatrix $regionMatrix){
-                return $regionMatrix->mainname;
-            }),
-            TD::make('epidbiomed', 'Epidbiomed')->render(function (RegionMatrix $regionMatrix){
-                return $regionMatrix->mainname;
-            }),
+            TD::make('radez', 'Radez'),
+            TD::make('epidbiomed', 'Epidbiomed'),
             TD::make('zeytun', 'Zeytun'),
 //            TD::make('zeytun', 'Zeytun'),
             TD::make('Edit')->render(function (RegionMatrix $regionMatrix){
