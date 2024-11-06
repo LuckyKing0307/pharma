@@ -70,6 +70,12 @@ class RegionMatrixScreen extends Screen
 
     public function asyncGetTablet(RegionMatrix $region): array
     {
+        if (is_array(json_decode($region['radez'],1))) {
+            $region['radez'] = json_decode($region['radez'], 1);
+        }
+        if (is_array(json_decode($region['epidbiomed'],1))){
+            $region['epidbiomed'] = json_decode($region['epidbiomed'],1);
+        }
         return [
             'region' => $region
         ];
@@ -84,6 +90,8 @@ class RegionMatrixScreen extends Screen
             $supply['avromed'] = $supply['avromed_extra'];
             unset($supply['avromed_extra']);
         }
+        $supply['epidbiomed'] = isset($supply['epidbiomed']) ?  json_encode($supply['epidbiomed']) : '[]';
+        $supply['radez'] =  isset($supply['radez']) ? json_encode($supply['radez']) : '[]';
         $tab = new RegionMatrix($supply);
         $tab->save();
     }
@@ -95,6 +103,8 @@ class RegionMatrixScreen extends Screen
             $data['avromed'] = $data['avromed_extra'];
             unset($data['avromed_extra']);
         }
+        $data['epidbiomed'] = isset($data['epidbiomed']) ? json_encode($data['epidbiomed']) : '';
+        $data['radez'] = isset($data['radez']) ? json_encode($data['radez']) : '';
         RegionMatrix::find($data['id'])->update($data);
     }
 

@@ -113,8 +113,22 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha], ['region_name','=',$region->$pasha_data]]);
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', ''], ['region_name','=',$region->sonar]]);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun],['aptek_name', '!=', ''], ['region_name','=',$region->zeytun]]);
-            $radez = RadezData::where([['tablet_name', '=', $tablet->radez],['aptek_name', '!=', '']])->where('aptek_name', 'like', '%'.$region->radez.'%');
-            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where('region_name', 'like', '%'.$region->epidbiomed.'%');
+            $radez = RadezData::where([['tablet_name', '=', $tablet->radez],['aptek_name', '!=', '']]);
+            if (is_array(json_decode($region->radez,1))){
+                foreach (json_decode($region->radez,1) as $radez_aptek){
+                    $radez = $radez->orWhere([['tablet_name', '=', $tablet->radez],['aptek_name', '=', $radez_aptek]]);
+                }
+            }else{
+                    $radez = $radez->where('region_name', 'like', '%'.$radez_aptek.'%');
+            }
+            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
+            if (is_array(json_decode($region->epidbiomed,1))){
+                foreach (json_decode($region->epidbiomed,1) as $epid_aptek){
+                    $epidbiomed = $epidbiomed->orWhere([['tablet_name', '=', $tablet->epidbiomed],['aptek_name', '=', $epid_aptek]]);
+                }
+            }else{
+                $epidbiomed = $epidbiomed->where('region_name', 'like', '%'.$region->epidbiomed.'%');
+            }
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
