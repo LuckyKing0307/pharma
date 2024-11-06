@@ -61,7 +61,7 @@ class RegionMatrixCreate extends Rows
                 ->fromModel(RadezData::class, 'aptek_name', 'aptek_name')->multiple()
                 ->title('Radez'),
             Relation::make('epidbiomed')
-                ->fromModel(EpidbiomedData::class, 'aptek_name', 'aptek_name')->multiple()
+                ->fromModel(EpidbiomedData::class, 'region_name', 'region_name')->multiple()
                 ->title('Epidbiomed'),
             Relation::make('zeytun')
                 ->fromModel(ZeytunData::class, 'region_name', 'region_name')

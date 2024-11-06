@@ -59,7 +59,7 @@ class RegionMatrixEdit extends Rows
                 ->fromModel(RadezData::class, 'aptek_name', 'aptek_name')
                 ->title('Radez')->nullable()->multiple(),
             Relation::make('region.epidbiomed.')
-                ->fromModel(EpidbiomedData::class, 'aptek_name', 'aptek_name')
+                ->fromModel(EpidbiomedData::class, 'region_name', 'region_name')
                 ->title('Epidbiomed')->nullable()->multiple(),
             Relation::make('region.aztt')
                 ->fromModel(AzttData::class, 'region_name', 'region_name')
