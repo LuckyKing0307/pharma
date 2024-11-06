@@ -16,9 +16,9 @@ class ExportController extends Controller
         return Excel::download(new TabletsExport, $day.'.xlsx');
     }
 
-    public function avromed()
+    public function avromed(string $depo_name)
     {
         $day = Carbon::now()->format('Y-m-d');
-        return Excel::download(new DepoExport, 'Avromed '.$day.'.xlsx');
+        return Excel::download(new DepoExport($depo_name), $depo_name.' '.$day.'.xlsx');
     }
 }

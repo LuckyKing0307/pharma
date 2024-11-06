@@ -7,4 +7,4 @@ Route::get('/', function () {
 });
 
 Route::get('export', [\App\Http\Controllers\ExportController::class, 'export']);
-Route::get('avromed', [\App\Http\Controllers\ExportController::class, 'avromed']);
+Route::get('depo/{depo:name}', [\App\Http\Controllers\ExportController::class, 'avromed']);

@@ -81,12 +81,12 @@ class AvromedImport implements ToModel, WithChunkReading, WithBatchInserts, Shou
 
     public function chunkSize(): int
     {
-        return 100;
+        return 1000;
     }
 
     public function batchSize(): int
     {
-        return 100;
+        return 1000;
     }
     public static function afterImport(AfterImport $event)
     {

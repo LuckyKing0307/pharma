@@ -54,7 +54,7 @@ class AvromedScreen extends Screen
                 ->method('create')
                 ->icon('plus'),
             Link::make('Download')
-                ->href(env('APP_FILE_URL').'/avromed')->icon('download'),
+                ->href(env('APP_FILE_URL').'/depo/avromed')->icon('download'),
         ];
     }
 

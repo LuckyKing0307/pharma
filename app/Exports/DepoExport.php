@@ -25,6 +25,13 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles, WithTitle
 {
     use Exportable;
+
+    public string $depo;
+
+    public function __construct($depo)
+    {
+        $this->depo = $depo;
+    }
     public $regions_array = [0=>["a"=>'', 'name'=>'Лекарства']];
     public $tablets = [0 => [
         'a' =>'',
@@ -98,11 +105,35 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
         $tablets = MainTabletMatrix::all();
         foreach ($tablets as $tablet) {
             $tablet_data = [];
-            $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed]]);
+            if ($this->depo=='avromed'){
+                $data = AvromedData::where([['tablet_name', '=', $tablet->avromed]]);
+            }
+            if ($this->depo=='azerimed'){
+                $data = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]]);
+            }
+            if ($this->depo=='epidbiomed'){
+                $data = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
+            }
+            if ($this->depo=='aztt'){
+                $data = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']]);
+            }
+            if ($this->depo=='pasha'){
+                $pasha_data = 'pasha-k';
+                $data = PashaData::where([['tablet_name', '=', $tablet->$pasha_data]]);
+            }
+            if ($this->depo=='radez'){
+                $data = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null);
+            }
+            if ($this->depo=='zeytun'){
+                $data = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null);
+            }
+            if ($this->depo=='sonar'){
+                $data = SonarData::where([['tablet_name', '=', $tablet->sonar]]);
+            }
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
-            $tablet_data = $this->getFile($tablet_data, $avromed);
+            $tablet_data = $this->getFile($tablet_data, $data);
             $tablet_data['all_sales'] = 0;
             for ($i = 1; $i <= 12; $i++) {
                 if (isset($tablet_data[$i])){
@@ -167,7 +198,7 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
      */
     public function title(): string
     {
-        return 'Avromed';
+        return $this->depo;
     }
 
     public function styles(Worksheet $sheet)

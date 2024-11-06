@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Orchid\Attachment\Models\Attachment;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -54,6 +55,8 @@ class EpidbiomedScreen extends Screen
                 ->modal('uploadFile')
                 ->method('create')
                 ->icon('plus'),
+            Link::make('Download')
+                ->href(env('APP_FILE_URL').'/depo/epidbiomed')->icon('download'),
             ];
     }
 
