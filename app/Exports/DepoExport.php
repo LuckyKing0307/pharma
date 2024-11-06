@@ -112,7 +112,7 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
                 $data = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]]);
             }
             if ($this->depo=='epidbiomed'){
-                $data = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
+                $data = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where('region_name', null);
             }
             if ($this->depo=='aztt'){
                 $data = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']]);
