@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts
+class AzerimedImport implements ToModel, WithChunkReading
 {
     use RemembersRowNumber;
 
@@ -65,11 +65,6 @@ class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts
     }
 
     public function chunkSize(): int
-    {
-        return 100;
-    }
-
-    public function batchSize(): int
     {
         return 100;
     }

@@ -17,7 +17,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterImport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class AvromedImport implements ToModel, WithChunkReading, WithBatchInserts, ShouldQueue,WithEvents
+class AvromedImport implements ToModel, WithChunkReading, ShouldQueue,WithEvents
 {
     use RemembersRowNumber, Importable, RegistersEventListeners;
 
@@ -80,11 +80,6 @@ class AvromedImport implements ToModel, WithChunkReading, WithBatchInserts, Shou
     }
 
     public function chunkSize(): int
-    {
-        return 1000;
-    }
-
-    public function batchSize(): int
     {
         return 1000;
     }
