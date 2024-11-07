@@ -119,7 +119,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                     $radez = $radez->orWhere([['tablet_name', '=', $tablet->radez],['aptek_name', '=', $radez_aptek]]);
                 }
             }else{
-                    $radez = $radez->where('region_name', 'like', '%'.$radez_aptek.'%');
+                    $radez = $radez->where('region_name', 'like', '%'.$region->radez.'%');
             }
             $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
             if (is_array(json_decode($region->epidbiomed,1))){
