@@ -112,8 +112,10 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 for ($k = 1; $k < count($this->tablets_data); $k++) {
                     $region =  $this->tablets_data[$k];
                     for ($i = 1; $i <= 12; $i++) {
-                        $tablet_data[$i] = $tablet_data[$i]-$region->tablets[$key][$i];
-                        $tablet_data[$i+20] = $tablet_data[$i+20]-$region->tablets[$key][$i+20];
+                        if (isset($tablet_data[$i]) and isset($this->tablets[$key][$i])) {
+                            $tablet_data[$i] = $tablet_data[$i] - $region->tablets[$key][$i];
+                            $tablet_data[$i + 20] = $tablet_data[$i + 20] - $region->tablets[$key][$i + 20];
+                        }
                     }
                     $tablet_data['all_sales'] = $tablet_data['all_sales']-$region->tablets[$key]['all_sales'];
                 }
