@@ -27,7 +27,7 @@ class EpidbiomedImport implements ToModel, WithStartRow
     public function model(array $row)
     {
         if (strtolower($row[0])!='Итого'){
-            if ($row[0]!='ЯЩМЯДЛИ ИЛЩАМ АСЛ' and $row[4]=='' and (!str_contains($row['0'], 'АПТЕК') and (str_contains($row['0'], ' АМЛО ') or str_contains($row['0'], 'MQ ') or str_contains($row['0'], 'MG ') or str_contains($row['0'], ' RASTVOR') or str_contains($row['0'], ' krem') or str_contains($row['0'], ' N') or str_contains($row['0'], ' tabl')  or str_contains($row['0'], 'ml ') or str_contains($row['0'], 'mg ') or str_contains($row['0'], 'maz ') or str_contains($row['0'], 'krem ') or str_contains($row['0'], ' SPREY ') or str_contains($row['0'], ' EGIS') or str_contains($row['0'], ' aerosol ')  or str_contains($row['0'], ' №')))) {
+            if ($row[0]!='ЯЩМЯДЛИ ИЛЩАМ АСЛ' and (!str_contains($row['0'], 'АПТЕК') and (str_contains($row['0'], ' АМЛО ') or str_contains($row['0'], 'MQ ') or str_contains($row['0'], 'MG ') or str_contains($row['0'], ' RASTVOR') or str_contains($row['0'], ' krem') or str_contains($row['0'], ' N') or str_contains($row['0'], ' tabl')  or str_contains($row['0'], 'ml ') or str_contains($row['0'], 'mg ') or str_contains($row['0'], 'maz ') or str_contains($row['0'], 'krem ') or str_contains($row['0'], ' SPREY ') or str_contains($row['0'], ' EGIS') or str_contains($row['0'], ' aerosol ')  or str_contains($row['0'], ' №')))) {
                 EpidbiomedData::create([
                     'tablet_name' => $row[0],
                     'qty' => isset($row[6]) ? $row[6] : '',
