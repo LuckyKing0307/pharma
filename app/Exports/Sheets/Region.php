@@ -114,6 +114,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', ''], ['region_name','=',$region->sonar]]);
             $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun],['aptek_name', '!=', ''], ['region_name','=',$region->zeytun]]);
             $radez = RadezData::where([['tablet_name', '=', $tablet->radez],['aptek_name', '!=', '']]);
+            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
             if (is_array(json_decode($region->radez,1))){
                 foreach (json_decode($region->radez,1) as $radez_aptek){
                     $radez = $radez->orWhere([['tablet_name', '=', $tablet->radez],['aptek_name', '=', $radez_aptek]]);
@@ -121,7 +122,6 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             }else{
                     $radez = $radez->where('region_name', 'like', '%'.$region->radez.'%');
             }
-            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
             if (is_array(json_decode($region->epidbiomed,1))){
                 foreach (json_decode($region->epidbiomed,1) as $epid_aptek){
                     $epidbiomed = $epidbiomed->orWhere([['tablet_name', '=', $tablet->epidbiomed],['region_name', '=', $epid_aptek]]);
@@ -165,8 +165,10 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+($price*floatval($tablet_data['all_sales']));
             $this->tablets[] = $tablet_data;
             for ($i = 1; $i<=12; $i++){
-                $this->tablets[1][$i] += $tablet_data[$i];
-                $this->tablets[1][$i+20] += $tablet_data[$i+20];
+                if (isset($tablet_data[$i]) and isset($this->tablets[1][$i])){
+                    $this->tablets[1][$i] += $tablet_data[$i];
+                    $this->tablets[1][$i+20] += $tablet_data[$i+20];
+                }
             }
         }
         return collect($this->tablets);
