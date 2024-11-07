@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class AzerimedImport implements ToModel, WithChunkReading
+class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts
 {
     use RemembersRowNumber;
 
@@ -25,9 +25,6 @@ class AzerimedImport implements ToModel, WithChunkReading
     }
     public function model(array $row)
     {
-        if ($row[1]==''){
-            return false;
-        }
         if (strtolower($row[0])!='müştəri adı' and $row[0]!='' and strtolower($row[3])!='miqdarı'){
             $region_name = $row[1] ? explode('|', $row[1])[0] : '';
             if ($region_name=='NERIMANO'){
@@ -65,6 +62,11 @@ class AzerimedImport implements ToModel, WithChunkReading
     }
 
     public function chunkSize(): int
+    {
+        return 100;
+    }
+
+    public function batchSize(): int
     {
         return 100;
     }

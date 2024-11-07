@@ -36,10 +36,7 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue,WithEvents
     }
     public function model(array $row)
     {
-        if ($row[1]=='Total'){
-            return false;
-        }
-        if (strtolower($row[0])!='date' and $row[0]!='' and strtolower($row[7])!='Name'){
+        if (strtolower($row[0])!='date' and $row[1]!='Total' and $row[0]!='' and strtolower($row[7])!='Name'){
             AvromedData::create([
                 'branch' => $row[1],
                 'date' => $row[0],
