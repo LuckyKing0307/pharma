@@ -17,33 +17,35 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterImport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class AvromedImport implements ToModel, WithChunkReading, ShouldQueue,WithEvents
+class AvromedImport implements ToModel, WithChunkReading, ShouldQueue, WithEvents, WithBatchInserts
 {
     use RemembersRowNumber, Importable, RegistersEventListeners;
 
     public string $firm = 'avromed';
     public string $file_id;
     public int $tabletNameRow = 7;
+
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+     * @param array $row
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
 
     public function __construct($file_id)
     {
-        $this->file_id= $file_id;
+        $this->file_id = $file_id;
     }
+
     public function model(array $row)
     {
-        if (strtolower($row[0])!='date' and $row[1]!='Total' and $row[0]!='' and strtolower($row[7])!='Name'){
+        if (strtolower($row[0]) != 'date' and $row[1] != 'Total' and $row[0] != '' and strtolower($row[7]) != 'Name') {
             AvromedData::create([
                 'branch' => $row[1],
                 'date' => $row[0],
                 'main_parent' => $row[2],
                 'main_supplier' => $row[3],
                 'region' => $row[4],
-                'region_name' => $row[5]!=null ? $row[5] : $row[4],
+                'region_name' => $row[5] != null ? $row[5] : $row[4],
                 'aptek_name' => $row[6],
                 'tablet_name' => $row[7],
                 'supervisor' => $row[8],
@@ -63,13 +65,13 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue,WithEvents
                 ->orWhere(['radez' => $row[$this->tabletNameRow]])
                 ->orWhere(['sonar' => $row[$this->tabletNameRow]])
                 ->orWhere(['zeytun' => $row[$this->tabletNameRow]]);
-            if (!$tablets->exists()){
-               TabletMatrix::create([
+            if (!$tablets->exists()) {
+                TabletMatrix::create([
                     $this->firm => $row[$this->tabletNameRow],
-               ]);
-            } elseif ($row[$this->tabletNameRow]!='Name'){
+                ]);
+            } elseif ($row[$this->tabletNameRow] != 'Name') {
                 $tablets->get();
-                foreach ($tablets as $tablet){
+                foreach ($tablets as $tablet) {
                     $tablet->update([$this->firm => $row[$this->tabletNameRow]]);
                 }
             }
@@ -80,11 +82,17 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue,WithEvents
     {
         return 1000;
     }
+
+    public function batchSize(): int
+    {
+        return 100;
+    }
+
     public static function afterImport(AfterImport $event)
     {
         $file = UploadedFile::where(['which_depo' => 'avromed'])->where(['uploaded' => 0]);
-        if ($file->exists()){
-            foreach ($file->get() as $file){
+        if ($file->exists()) {
+            foreach ($file->get() as $file) {
                 $file->uploaded = 1;
                 $file->save();
             }

@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts
+class AzerimedImport implements ToModel, WithChunkReading, ShouldQueue, WithBatchInserts
 {
     use RemembersRowNumber;
 
@@ -23,11 +23,12 @@ class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts
     {
         $this->file_id = $file_id;
     }
+
     public function model(array $row)
     {
-        if (strtolower($row[0])!='müştəri adı' and $row[0]!='' and strtolower($row[3])!='miqdarı'){
+        if (strtolower($row[0]) != 'müştəri adı' and $row[0] != '' and strtolower($row[3]) != 'miqdarı') {
             $region_name = $row[1] ? explode('|', $row[1])[0] : '';
-            if ($region_name=='NERIMANO'){
+            if ($region_name == 'NERIMANO') {
                 $region_name = 'NARIMAN';
             }
             AzerimedData::create([
@@ -39,7 +40,7 @@ class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts
                 'uploaded_file_id' => $this->file_id,
                 'uploaded_date' => Carbon::now(),
             ]);
-            info($row[3].' '.$row[0]);
+            info($row[3] . ' ' . $row[0]);
             $tablets = TabletMatrix::where(['avromed' => $row[$this->tabletNameRow]])
                 ->orWhere(['azerimed' => $row[$this->tabletNameRow]])
                 ->orWhere(['aztt' => $row[$this->tabletNameRow]])
@@ -48,13 +49,13 @@ class AzerimedImport implements ToModel, WithChunkReading, WithBatchInserts
                 ->orWhere(['radez' => $row[$this->tabletNameRow]])
                 ->orWhere(['sonar' => $row[$this->tabletNameRow]])
                 ->orWhere(['zeytun' => $row[$this->tabletNameRow]]);
-            if (!$tablets->exists()){
+            if (!$tablets->exists()) {
                 TabletMatrix::create([
                     $this->firm => $row[$this->tabletNameRow],
                 ]);
-            } elseif ($row[$this->tabletNameRow]!='Name'){
+            } elseif ($row[$this->tabletNameRow] != 'Name') {
                 $tablets->get();
-                foreach ($tablets as $tablet){
+                foreach ($tablets as $tablet) {
                     $tablet->update([$this->firm => $row[$this->tabletNameRow]]);
                 }
             }
