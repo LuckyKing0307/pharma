@@ -135,7 +135,9 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
             $this->tablets[] = $tablet_data;
             for ($i = 1; $i<=12; $i++){
                 $this->tablets[1][$i] += $tablet_data[$i];
-                $this->tablets[1][$i+20] += $tablet_data[$i+20];
+                if ($this->tablets[1][$i]!='' and $this->tablets[1][$i]>0){
+                    $this->tablets[1][$i+20] += $tablet_data[$i+20];
+                }
             }
         }
         return collect($this->tablets);
