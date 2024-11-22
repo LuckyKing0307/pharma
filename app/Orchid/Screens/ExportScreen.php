@@ -3,10 +3,18 @@
 namespace App\Orchid\Screens;
 
 use App\Exports\TabletsExport;
+use App\Jobs\ProcessPodcast;
+use App\Models\ExportFiles;
+use App\Orchid\Layouts\ExportFiles as Table;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Orchid\Alert\Alert;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 use Maatwebsite\Excel\Facades\Excel;
+use Orchid\Support\Facades\Toast;
+
 class ExportScreen extends Screen
 {
     /**
@@ -16,7 +24,9 @@ class ExportScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'files' => ExportFiles::where('uploaded',1)->orderBy('id', 'DESC')->paginate(10),
+        ];
     }
 
     /**
@@ -37,7 +47,7 @@ class ExportScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-//            Button::make('download')->method('download')->icon('download'),
+            Button::make('download')->method('download')->icon('download'),
             Link::make('Download')
                 ->href(env('APP_FILE_URL').'/export')->icon('download'),
         ];
@@ -50,6 +60,25 @@ class ExportScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            Table::class,
+        ];
+    }
+
+    public function delete(ExportFiles $file)
+    {
+        ExportFiles::where(['id' => $file->id])->delete();
+        $file->delete();
+    }
+
+    public function download()
+    {
+        $file = new ExportFiles([
+            'file_url' => Carbon::now()->format('Y-m-d'),
+        ]);
+        $file->save();
+        (new TabletsExport())->queue('public/'.Carbon::now()->format('Y-m-d').'.xlsx')->chain([
+            new ProcessPodcast($file->id),
+        ]);
     }
 }
