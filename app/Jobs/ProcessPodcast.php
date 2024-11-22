@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Exports\TabletsExport;
 use App\Models\User;
 use App\Notifications\TaskCompleted;
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -20,6 +22,7 @@ class ProcessPodcast implements ShouldQueue
     public function __construct($file_id)
     {
        $this->file = $file_id;
+       (new TabletsExport())->store('public/'.Carbon::now()->format('Y-m-d').'.xlsx');
     }
 
     /**

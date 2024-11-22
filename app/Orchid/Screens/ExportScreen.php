@@ -77,8 +77,6 @@ class ExportScreen extends Screen
             'file_url' => Carbon::now()->format('Y-m-d'),
         ]);
         $file->save();
-        (new TabletsExport())->store('public/'.Carbon::now()->format('Y-m-d').'.xlsx')->chain([
-            new ProcessPodcast($file->id),
-        ]);
+        new ProcessPodcast($file->id);
     }
 }
