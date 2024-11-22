@@ -24,11 +24,11 @@ class TabletsExport implements WithMultipleSheets, ShouldQueue, ShouldAutoSize
 
         $tablets = new Tablet();
         $sheets[] = $tablets;
-//        $regions = RegionMatrix::all();
-//        foreach ($regions as $region){
-//            $sheets[] = new Region($region);
-//        }
-//        $sheets[] = new Others($sheets);
+        $regions = RegionMatrix::all();
+        foreach ($regions as $region){
+            $sheets[] = new Region($region);
+        }
+        $sheets[] = new Others($sheets);
 
         return $sheets;
     }
