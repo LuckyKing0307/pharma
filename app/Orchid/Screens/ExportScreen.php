@@ -46,10 +46,11 @@ class ExportScreen extends Screen
      */
     public function commandBar(): iterable
     {
+
         return [
-            Button::make('download')->method('download')->icon('download'),
-            Link::make('Download')
-                ->href(env('APP_FILE_URL').'/export')->icon('download'),
+            Button::make('Create File')->method('download')->icon('plus'),
+//            Link::make('Download')
+//                ->href(env('APP_FILE_URL').'/export')->icon('download'),
         ];
     }
 
