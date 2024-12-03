@@ -91,11 +91,11 @@ class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatch
 
     public function chunkSize(): int
     {
-        return 1000;
+        return 10000;
     }
 
     public function batchSize(): int
     {
-        return 1000;
+        return 10000;
     }
 }
