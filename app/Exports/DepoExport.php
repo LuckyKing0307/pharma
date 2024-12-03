@@ -105,29 +105,29 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
         $tablets = MainTabletMatrix::all();
         foreach ($tablets as $tablet) {
             $tablet_data = [];
-            if ($this->depo=='avromed'){
+            if ($this->depo=='avromed' and $tablet->avromed!=''){
                 $data = AvromedData::where([['tablet_name', '=', $tablet->avromed]]);
             }
-            if ($this->depo=='azerimed'){
+            if ($this->depo=='azerimed' and $tablet->azerimed!=''){
                 $data = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]]);
             }
-            if ($this->depo=='epidbiomed'){
+            if ($this->depo=='epidbiomed' and $tablet->epidbiomed!=''){
                 $data = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where('region_name', null);
             }
-            if ($this->depo=='aztt'){
+            if ($this->depo=='aztt' and $tablet->aztt!=''){
                 $data = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']]);
             }
-            if ($this->depo=='pasha'){
-                $pasha_data = 'pasha-k';
+            $pasha_data = 'pasha-k';
+            if ($this->depo=='pasha' and $tablet->$pasha_data!=''){
                 $data = PashaData::where([['tablet_name', '=', $tablet->$pasha_data]]);
             }
-            if ($this->depo=='radez'){
+            if ($this->depo=='radez' and $tablet->radez!=''){
                 $data = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null);
             }
-            if ($this->depo=='zeytun'){
+            if ($this->depo=='zeytun' and $tablet->zeytun!=''){
                 $data = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null);
             }
-            if ($this->depo=='sonar'){
+            if ($this->depo=='sonar' and $tablet->sonar!=''){
                 $data = SonarData::where([['tablet_name', '=', $tablet->sonar]]);
             }
             $tablet_data['a'] = '';
