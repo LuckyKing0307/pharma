@@ -31,14 +31,16 @@ class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatch
     */
     public function model(array $row)
     {
-        info($row[1]);
         if (str_contains($row['1'], ' шт') or str_contains($row['1'], ' упак') or str_contains($row['1'], ' флак') or str_contains($row['1'], ' тюб')) {
-            ZeytunData::create([
-                'tablet_name' => $row[1],
-                'sales_qty' => $row[2],
-                'uploaded_date' => Carbon::now(),
-                'uploaded_file_id' => $this->file_id,
-            ]);
+            $check = ZeytunData::where([['tablet_name', '=', $row[1]],['sales_qty', '=', $row[2]],['uploaded_file_id','=',$this->file_id]]);
+            if (!$check->exists()){
+                ZeytunData::create([
+                    'tablet_name' => $row[1],
+                    'sales_qty' => $row[2],
+                    'uploaded_date' => Carbon::now(),
+                    'uploaded_file_id' => $this->file_id,
+                ]);
+            }
             $tablets = TabletMatrix::where(['avromed' => $row[$this->tabletNameRow]])
                 ->orWhere(['azerimed' => $row[$this->tabletNameRow]])
                 ->orWhere(['aztt' => $row[$this->tabletNameRow]])
@@ -70,7 +72,7 @@ class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatch
                 if ($tablet->exists()){
                     $tablet = $tablet->first();
                     ZeytunData::create([
-                        'aptek_name' => $row[1],
+                        'aptek_name' => $row[1]!='' ? $row[1] : 'QWER',
                         'tablet_name' => $tablet->tablet_name,
                         'sales_qty' => $row[2],
                         'uploaded_date' => Carbon::now(),
