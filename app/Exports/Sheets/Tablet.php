@@ -126,7 +126,7 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 }
             }
             $price = str_replace(',', '.', $tablet_data['price']);
-            if ($tablet_data['all_sales']>90000){
+            if ($tablet_data['all_sales']>80000){
                 $tablet_data['all_sales'] = 0;
             }
             $tablet_data['all_sales_price'] = $price*floatval($tablet_data['all_sales']);
@@ -164,14 +164,14 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 if ($file->uploaded_date){
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
                     $data[Carbon::make($file->uploaded_date)->month+20] += floatval($tablet->sales_qty)*$price;
-                    if ($data[Carbon::make($file->uploaded_date)->month]>90000){
+                    if ($data[Carbon::make($file->uploaded_date)->month]>80000){
                         $data[Carbon::make($file->uploaded_date)->month] = 0;
                         $data[Carbon::make($file->uploaded_date)->month+20] = 0;
                     }
                 }else{
                     $data[Carbon::now()->month] += $tablet->sales_qty;
                     $data[Carbon::now()->month+20] += floatval($tablet->sales_qty)*$price;
-                    if ($data[Carbon::now()->month]>90000){
+                    if ($data[Carbon::now()->month]>80000){
                         $data[Carbon::now()->month] = 0;
                         $data[Carbon::now()->month+20] = 0;
                     }
