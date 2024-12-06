@@ -14,6 +14,7 @@ use App\Models\SonarData;
 use App\Models\UploadedFile;
 use App\Models\ZeytunData;
 use Carbon\Carbon;
+use Dflydev\DotAccessData\Data;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
@@ -108,17 +109,20 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
         $tablets = $this->tablets_data[0]->tablets;
         foreach ($tablets as $key => $tablet) {
             $tablet_data = $tablet;
-            if ($key>0){
-                for ($k = 1; $k < count($this->tablets_data); $k++) {
-                    $region =  $this->tablets_data[$k];
-                    for ($i = 1; $i <= 12; $i++) {
-                        if (isset($tablet_data[$i]) and isset($this->tablets[$key][$i])) {
-                            $tablet_data[$i] = $tablet_data[$i] - $region->tablets[$key][$i];
-                            $tablet_data[$i + 20] = $tablet_data[$i + 20] - $region->tablets[$key][$i + 20];
+            for ($k = 1; $k < count($this->tablets_data); $k++) {
+                $region =  $this->tablets_data[$k];
+                for ($i = 1; $i <= 12; $i++) {
+                    if (isset($tablet_data[$i])) {
+                        if (floatval($tablet_data[$i])>0){
+                            $tablet_data[$i] = floatval($tablet_data[$i]) - floatval($region->tablets[$key][$i]);
+                            $tablet_data[$i + 20] = floatval($tablet_data[$i + 20]) - floatval($region->tablets[$key][$i + 20]);
+                        }else{
+                            $tablet_data[$i] = 0;
+                            $tablet_data[$i + 20] = 0;
                         }
                     }
-                    $tablet_data['all_sales'] = $tablet_data['all_sales']-$region->tablets[$key]['all_sales'];
                 }
+                $tablet_data['all_sales'] = floatval($tablet_data['all_sales'])-floatval($region->tablets[$key]['all_sales']);
             }
 //            $price = str_replace(',', '.', $tablet_data['price']);
 //            $tablet_data['all_sales_price'] = intval($price) * intval($tablet_data['all_sales']);
@@ -126,7 +130,12 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
 
             $tablet_data['all_sales_price'] = floatval($tablet_data['all_sales'])*floatval($price);
             $this->tablets[1]['all_sales_price'] = floatval($this->tablets[1]['all_sales_price'])+floatval($tablet_data['all_sales_price']);
-            $this->tablets[$key] = $tablet_data;
+            if ($tablet_data['tablet_name']!='SKU' and $tablet_data['tablet_name']!='') {
+                $this->tablets[][$key] = $tablet_data;
+            }
+            elseif( $tablet_data['tablet_name']==''){
+                $this->tablets[$key] = $tablet_data;
+            }
         }
 
         return collect($this->tablets);
