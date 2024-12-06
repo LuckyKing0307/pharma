@@ -43,7 +43,7 @@ class TaskCompleted extends Notification
     public function toDashboard(object $notifiable): DashboardMessage
     {
         return (new DashboardMessage)
-            ->title('Your New Report '.$this->file->file_url. ' Taken Time: '. $this->time. 'Minutes')
+            ->title('Your New Report '.$this->file->file_url. ' Taken Time: '. $this->time. ' Minutes')
             ->message('Completed')
             ->action(url('/'));
     }
