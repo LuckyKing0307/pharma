@@ -18,11 +18,13 @@ class TaskCompleted extends Notification
      * Create a new notification instance.
      */
     public $file;
-    public function __construct($file_id)
+    public $time;
+    public function __construct($file_id , $time)
     {
         $this->file = ExportFiles::find($file_id);
         $this->file->uploaded = 1;
         $this->file->save();
+        $this->time = $time/60;
     }
 
     /**
@@ -41,7 +43,7 @@ class TaskCompleted extends Notification
     public function toDashboard(object $notifiable): DashboardMessage
     {
         return (new DashboardMessage)
-            ->title('Your New Report '.$this->file->file_url)
+            ->title('Your New Report '.$this->file->file_url. ' Taken Time: '. $this->time. 'Minutes')
             ->message('Completed')
             ->action(url('/'));
     }

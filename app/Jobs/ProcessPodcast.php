@@ -30,10 +30,16 @@ class ProcessPodcast implements ShouldQueue
      */
     public function handle(): void
     {
+
+            $startTime = microtime(true);
+
         (new TabletsExport())->store('public/'.Carbon::now()->format('Y-m-d').'.xlsx');
+        $endTime = microtime(true);
+        $timeTaken = $endTime - $startTime;
         $users = User::all();
         foreach ($users as $user) {
-            $user->notify(new TaskCompleted($this->file));
+            $user->notify(new TaskCompleted($this->file, $timeTaken));
         }
+
     }
 }
