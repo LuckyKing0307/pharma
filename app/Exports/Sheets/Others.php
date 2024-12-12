@@ -24,7 +24,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles, WithTitle
+class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
 {
 
     use Exportable;
@@ -113,7 +113,7 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles,
                 $region =  $this->tablets_data[$k];
                 for ($i = 1; $i <= 12; $i++) {
                     if (isset($tablet_data[$i])) {
-                        if (floatval($tablet_data[$i])>0 and isset($region->tablets[$key]) and  isset($region->tablets[$key][$i])) {
+                        if (floatval($tablet_data[$i])>0 and isset($region->tablets[$key]) and isset($region->tablets[$key][$i])) {
                             $tablet_data[$i] = floatval($tablet_data[$i]) - floatval($region->tablets[$key][$i]);
                             $tablet_data[$i + 20] = floatval($tablet_data[$i + 20]) - floatval($region->tablets[$key][$i + 20]);
                         }else{

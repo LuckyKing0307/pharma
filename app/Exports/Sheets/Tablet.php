@@ -23,7 +23,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithStyles, WithTitle
+class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
 {
     use Exportable;
     public $regions_array = [0=>["a"=>'', 'name'=>'Лекарства']];
