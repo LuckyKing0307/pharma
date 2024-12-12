@@ -24,7 +24,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
+class Others implements FromCollection, ShouldAutoSize, WithTitle
 {
 
     use Exportable;
