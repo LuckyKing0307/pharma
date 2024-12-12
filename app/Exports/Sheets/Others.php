@@ -180,21 +180,21 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
         return 'Others';
     }
 
-    public function styles(Worksheet $sheet)
-    {
-        $sheet->getStyle('B1:AD2')->getFill()->applyFromArray(['fillType' => 'solid','rotation' => 0, 'color' => ['rgb' => '324ea8'],]);
-        $sheet->getStyle('B1:AD2')->getFont()->applyFromArray([
-            'name'      =>  'Calibri',
-            'size'      =>  15,
-            'bold'      =>  true,
-            'color' => ['argb' => 'FFFFFF'],]);
-        $sheet->getStyle('B1:AD100')->applyFromArray([
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    'color' => ['argb' => '000000'],
-                ],
-            ]
-        ]);
-    }
+//    public function styles(Worksheet $sheet)
+//    {
+//        $sheet->getStyle('B1:AD2')->getFill()->applyFromArray(['fillType' => 'solid','rotation' => 0, 'color' => ['rgb' => '324ea8'],]);
+//        $sheet->getStyle('B1:AD2')->getFont()->applyFromArray([
+//            'name'      =>  'Calibri',
+//            'size'      =>  15,
+//            'bold'      =>  true,
+//            'color' => ['argb' => 'FFFFFF'],]);
+//        $sheet->getStyle('B1:AD100')->applyFromArray([
+//            'borders' => [
+//                'allBorders' => [
+//                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+//                    'color' => ['argb' => '000000'],
+//                ],
+//            ]
+//        ]);
+//    }
 }
