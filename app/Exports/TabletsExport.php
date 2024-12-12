@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class TabletsExport implements WithMultipleSheets, ShouldAutoSize
+class TabletsExport implements WithMultipleSheets, ShouldQueue, ShouldAutoSize
 {
     use Exportable;
 
