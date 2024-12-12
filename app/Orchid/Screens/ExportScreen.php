@@ -38,7 +38,6 @@ class ExportScreen extends Screen
     {
         return 'Экспорт Данных';
     }
-
     /**
      * The screen's action buttons.
      *
@@ -76,6 +75,7 @@ class ExportScreen extends Screen
             'file_url' => Carbon::now()->format('Y-m-d'),
         ]);
         $file->save();
+        info($file->newUniqueId());
         Toast::success('Started to generate excel file');
         ProcessPodcast::dispatch($file->id);
 //        $export->handle();
