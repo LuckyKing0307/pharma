@@ -23,7 +23,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class Region implements FromCollection, ShouldAutoSize, WithTitle
+class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
 {
 
     use Exportable;

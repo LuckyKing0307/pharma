@@ -27,7 +27,6 @@ class TabletsExport implements WithMultipleSheets, ShouldQueue, ShouldAutoSize
         $regions = RegionMatrix::all();
         foreach ($regions as $region){
             $sheets[] = new Region($region);
-            info($sheets);
         }
         $sheets[] = new Others($sheets);
 
