@@ -100,8 +100,7 @@ class RegionMatrixScreen extends Screen
     {
         $data = $request->all()['region'];
         if (isset($data['avromed_extra']) and $data['avromed_extra']!='') {
-            $data['avromed'] = $data['avromed_extra'];
-            unset($data['avromed_extra']);
+            $data['avromed_extra'] = $data['avromed_extra'];
         }
         $data['epidbiomed'] = isset($data['epidbiomed']) ? json_encode($data['epidbiomed']) : '';
         $data['radez'] = isset($data['radez']) ? json_encode($data['radez']) : '';
