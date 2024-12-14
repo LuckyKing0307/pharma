@@ -88,7 +88,6 @@ class RegionMatrixScreen extends Screen
         unset($supply['_state']);
         if (isset($supply['avromed_extra']) and $supply['avromed_extra']!='') {
             $supply['avromed'] = $supply['avromed_extra'];
-            unset($supply['avromed_extra']);
         }
         $supply['epidbiomed'] = isset($supply['epidbiomed']) ?  json_encode($supply['epidbiomed']) : '[]';
         $supply['radez'] =  isset($supply['radez']) ? json_encode($supply['radez']) : '[]';
