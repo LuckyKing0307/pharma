@@ -77,7 +77,6 @@ class RegionMatrixScreen extends Screen
             $region['epidbiomed'] = json_decode($region['epidbiomed'],1);
         }
         info($region);
-        dd($region);
         return [
             'region' => $region
         ];
@@ -105,6 +104,7 @@ class RegionMatrixScreen extends Screen
         }
         $data['epidbiomed'] = isset($data['epidbiomed']) ? json_encode($data['epidbiomed']) : '';
         $data['radez'] = isset($data['radez']) ? json_encode($data['radez']) : '';
+        info($data);
         RegionMatrix::find($data['id'])->update($data);
     }
 
