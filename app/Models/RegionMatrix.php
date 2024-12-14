@@ -15,7 +15,7 @@ class RegionMatrix extends Model
         'price',
         'avromed',
         'azerimed',
-        'azerimed_extra',
+        'avromed_extra',
         'aztt',
         'epidbiomed',
         'pasha-k',
