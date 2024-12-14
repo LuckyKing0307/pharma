@@ -76,6 +76,8 @@ class RegionMatrixScreen extends Screen
         if (is_array(json_decode($region['epidbiomed'],1))){
             $region['epidbiomed'] = json_decode($region['epidbiomed'],1);
         }
+        info($region);
+        dd($region);
         return [
             'region' => $region
         ];
