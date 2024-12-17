@@ -102,12 +102,11 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
      */
     public function collection(): Collection
     {
-        $tablets = MainTabletMatrix::where([['id','>',0]])->limit(20)->get();
+        $tablets = MainTabletMatrix::all();
         foreach ($tablets as $tablet) {
             $tablet_data = [];
             if ($this->depo=='avromed'){
-                $data = AvromedData::where([['tablet_name', '=', $tablet->avromed]])->limit(10)->get();
-                dd($tablet->avromed .' '.$data);
+                $data = AvromedData::where([['tablet_name', '=', $tablet->avromed]]);
             }
             if ($this->depo=='azerimed'){
                 $data = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]]);
@@ -131,11 +130,9 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
             if ($this->depo=='sonar'){
                 $data = SonarData::where([['tablet_name', '=', $tablet->sonar]]);
             }
-            $price = str_replace(',', '.', $tablet->price);
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
-            $tablet_data['price'] = floatval($price);
-            $tablet_data['saled'] = floatval($price);
+            $tablet_data['price'] = $tablet->price;
             $tablet_data = $this->getFile($tablet_data, $data);
             $tablet_data['all_sales'] = 0;
             for ($i = 1; $i <= 12; $i++) {
@@ -143,9 +140,10 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
                     $tablet_data['all_sales'] =  $tablet_data['all_sales']+$tablet_data[$i];
                 }
             }
-//            if ($tablet_data['all_sales']>80000){
-//                $tablet_data['all_sales'] = 0;
-//            }
+            $price = str_replace(',', '.', $tablet_data['price']);
+            if ($tablet_data['all_sales']>80000){
+                $tablet_data['all_sales'] = 0;
+            }
             $tablet_data['all_sales_price'] = floatval($price)*floatval($tablet_data['all_sales']);
             $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
             $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+(floatval($price)*floatval($tablet_data['all_sales']));
@@ -155,6 +153,9 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
                 $this->tablets[1][$i+20] += $tablet_data[$i+20];
             }
         }
+
+        info($this->tablets);
+        dd($this->tablets);
         return collect($this->tablets);
     }
 
