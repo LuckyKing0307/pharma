@@ -160,11 +160,11 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
                     $price = str_replace(',', '.', $data['price']);
-                    $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
+                    $data[Carbon::make($file->uploaded_date)->month] += floatval($tablet->sales_qty);
                     $data[Carbon::make($file->uploaded_date)->month+20] += floatval($tablet->sales_qty)*floatval($price);
                 }else{
                     $price = str_replace(',', '.', $data['price']);
-                    $data[Carbon::now()->month] += $tablet->sales_qty;
+                    $data[Carbon::now()->month] += floatval($tablet->sales_qty);
                     $data[Carbon::now()->month+20] += floatval($tablet->sales_qty)*floatval($price);
                 }
             }

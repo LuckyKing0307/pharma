@@ -162,14 +162,14 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             if ($file->exists()){
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
-                    $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
+                    $data[Carbon::make($file->uploaded_date)->month] += floatval($tablet->sales_qty);
                     $data[Carbon::make($file->uploaded_date)->month+20] += floatval($tablet->sales_qty)*$price;
                     if ($data[Carbon::make($file->uploaded_date)->month]>80000){
                         $data[Carbon::make($file->uploaded_date)->month] = 0;
                         $data[Carbon::make($file->uploaded_date)->month+20] = 0;
                     }
                 }else{
-                    $data[Carbon::now()->month] += $tablet->sales_qty;
+                    $data[Carbon::now()->month] += floatval($tablet->sales_qty);
                     $data[Carbon::now()->month+20] += floatval($tablet->sales_qty)*$price;
                     if ($data[Carbon::now()->month]>80000){
                         $data[Carbon::now()->month] = 0;
