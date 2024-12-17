@@ -134,6 +134,7 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = floatval($price);
+            $tablet_data['saled'] = floatval($price);
             $tablet_data = $this->getFile($tablet_data, $data);
             $tablet_data['all_sales'] = 0;
             for ($i = 1; $i <= 12; $i++) {
@@ -153,9 +154,6 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
                 $this->tablets[1][$i+20] += $tablet_data[$i+20];
             }
         }
-
-        info($this->tablets);
-        dd($this->tablets);
         return collect($this->tablets);
     }
 
@@ -176,6 +174,7 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
         foreach ($tablets->get() as $tablet) {
             $file = UploadedFile::where(['file_id' => $tablet->uploaded_file_id]);
             if ($file->exists()){
+                info($file);
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
                     $data[Carbon::make($file->uploaded_date)->month] += floatval($tablet->sales_qty);
