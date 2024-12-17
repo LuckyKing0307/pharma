@@ -174,7 +174,7 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
         foreach ($tablets->get() as $tablet) {
             $file = UploadedFile::where(['file_id' => $tablet->uploaded_file_id]);
             if ($file->exists()){
-                dd($file->get());
+                dd($file->get()->first());
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
                     $data[Carbon::make($file->uploaded_date)->month] += floatval($tablet->sales_qty);
