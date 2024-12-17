@@ -130,9 +130,10 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
             if ($this->depo=='sonar'){
                 $data = SonarData::where([['tablet_name', '=', $tablet->sonar]]);
             }
+            $price = str_replace(',', '.', $tablet->price);
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
-            $tablet_data['price'] = $tablet->price;
+            $tablet_data['price'] = floatval($price);
             $tablet_data = $this->getFile($tablet_data, $data);
             $tablet_data['all_sales'] = 0;
             for ($i = 1; $i <= 12; $i++) {
@@ -140,7 +141,6 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
                     $tablet_data['all_sales'] =  $tablet_data['all_sales']+$tablet_data[$i];
                 }
             }
-            $price = str_replace(',', '.', $tablet_data['price']);
 //            if ($tablet_data['all_sales']>80000){
 //                $tablet_data['all_sales'] = 0;
 //            }
