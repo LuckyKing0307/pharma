@@ -102,7 +102,7 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
      */
     public function collection(): Collection
     {
-        $tablets = MainTabletMatrix::where([['id','>',0]])->limit(2)->get();
+        $tablets = MainTabletMatrix::where([['id','>',0]])->limit(20)->get();
         foreach ($tablets as $tablet) {
             $tablet_data = [];
             if ($this->depo=='avromed'){
@@ -174,8 +174,8 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
         foreach ($tablets->get() as $tablet) {
             $file = UploadedFile::where(['file_id' => $tablet->uploaded_file_id]);
             if ($file->exists()){
-                $file = $file->get()->first();
                 dd($file);
+                $file = $file->get()->first();
                 if ($file->uploaded_date){
                     $data[Carbon::make($file->uploaded_date)->month] += floatval($tablet->sales_qty);
                     $data[Carbon::make($file->uploaded_date)->month+20] += floatval($tablet->sales_qty)*floatval($price);
