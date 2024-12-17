@@ -47,7 +47,7 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue, WithEvent
                 'region' => $row[4],
                 'region_name' => $row[5] != null ? $row[5] : $row[4],
                 'aptek_name' => $row[6],
-                'tablet_name' => $row[7],
+                'tablet_name' => str_replace(' (Венгрия)', '', $row[7]),
                 'supervisor' => $row[8],
                 'item_code' => $row[9],
                 'client_code' => $row[10],
