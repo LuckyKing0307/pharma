@@ -153,9 +153,6 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
                 $this->tablets[1][$i+20] += $tablet_data[$i+20];
             }
         }
-
-        info($this->tablets);
-        dd($this->tablets);
         return collect($this->tablets);
     }
 
