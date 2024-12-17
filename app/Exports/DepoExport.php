@@ -191,6 +191,8 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
                 }
             }
         }
+        info($data);
+        dd($data);
         return $data;
     }
     /**
