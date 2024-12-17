@@ -175,7 +175,7 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
             if ($file->exists()){
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
-                    $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
+                    $data[Carbon::make($file->uploaded_date)->month] += intval($tablet->sales_qty);
                     $data[Carbon::make($file->uploaded_date)->month+20] += floatval($tablet->sales_qty)*floatval($price);
                     if ($data[Carbon::make($file->uploaded_date)->month]>80000){
                         $data[Carbon::make($file->uploaded_date)->month] = 0;
