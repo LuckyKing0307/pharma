@@ -102,7 +102,7 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
      */
     public function collection(): Collection
     {
-        $tablets = MainTabletMatrix::all();
+        $tablets = MainTabletMatrix::all()->limit(10);
         foreach ($tablets as $tablet) {
             $tablet_data = [];
             if ($this->depo=='avromed'){
