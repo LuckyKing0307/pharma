@@ -141,9 +141,9 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
                 }
             }
             $price = str_replace(',', '.', $tablet_data['price']);
-            if ($tablet_data['all_sales']>80000){
-                $tablet_data['all_sales'] = 0;
-            }
+//            if ($tablet_data['all_sales']>80000){
+//                $tablet_data['all_sales'] = 0;
+//            }
             $tablet_data['all_sales_price'] = floatval($price)*floatval($tablet_data['all_sales']);
             $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
             $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+(floatval($price)*floatval($tablet_data['all_sales']));
