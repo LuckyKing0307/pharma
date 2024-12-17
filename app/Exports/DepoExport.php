@@ -144,9 +144,9 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
             if ($tablet_data['all_sales']>80000){
                 $tablet_data['all_sales'] = 0;
             }
-            $tablet_data['all_sales_price'] = $price*floatval($tablet_data['all_sales']);
+            $tablet_data['all_sales_price'] = floatval($price)*floatval($tablet_data['all_sales']);
             $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
-            $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+($price*floatval($tablet_data['all_sales']));
+            $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+(floatval($price)*floatval($tablet_data['all_sales']));
             $this->tablets[] = $tablet_data;
             for ($i = 1; $i<=12; $i++){
                 $this->tablets[1][$i] += $tablet_data[$i];
@@ -176,14 +176,14 @@ class DepoExport implements FromCollection, ShouldQueue, ShouldAutoSize, WithSty
                 $file = $file->get()->first();
                 if ($file->uploaded_date){
                     $data[Carbon::make($file->uploaded_date)->month] += $tablet->sales_qty;
-                    $data[Carbon::make($file->uploaded_date)->month+20] += intval($tablet->sales_qty)*$price;
+                    $data[Carbon::make($file->uploaded_date)->month+20] += floatval($tablet->sales_qty)*floatval($price);
                     if ($data[Carbon::make($file->uploaded_date)->month]>80000){
                         $data[Carbon::make($file->uploaded_date)->month] = 0;
                         $data[Carbon::make($file->uploaded_date)->month+20] = 0;
                     }
                 }else{
                     $data[Carbon::now()->month] += $tablet->sales_qty;
-                    $data[Carbon::now()->month+20] += intval($tablet->sales_qty)*$price;
+                    $data[Carbon::now()->month+20] += floatval($tablet->sales_qty)*floatval($price);
                     if ($data[Carbon::now()->month]>80000){
                         $data[Carbon::now()->month] = 0;
                         $data[Carbon::now()->month+20] = 0;
