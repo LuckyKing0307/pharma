@@ -87,8 +87,10 @@ class ExportScreen extends Screen
         $file = new ExportFiles([
             'file_url' => Carbon::now()->format('Y-m-d'),
         ]);
-        info($file);
         $file->save();
+        $file->file_url = $file->file_url.'-'.$file->id;
+        $file->save();
+        var_dump($file->file_url);
         Toast::success('Started to generate excel file');
         ProcessPodcast::dispatch($file->id,$data);
 //        $export->handle();

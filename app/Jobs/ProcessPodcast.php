@@ -34,7 +34,7 @@ class ProcessPodcast implements ShouldQueue
     {
         try {
             $startTime = microtime(true);
-            (new TabletsExport($this->filter))->store('public/'.Carbon::now()->format('Y-m-d').'.xlsx');
+            (new TabletsExport($this->filter))->store('public/'.Carbon::now()->format('Y-m-d').'-'.$this->file.'.xlsx');
             $endTime = microtime(true);
             $timeTaken = $endTime - $startTime;
             $users = User::all();
@@ -42,7 +42,6 @@ class ProcessPodcast implements ShouldQueue
                 $user->notify(new TaskCompleted($this->file, $timeTaken));
             }
         } catch (\Exception $e){
-            info($e);
             $users = User::all();
             foreach ($users as $user) {
                 $user->notify(new TaskCompleted($this->file, 0));
