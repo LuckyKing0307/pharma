@@ -46,10 +46,10 @@ class ExportCreate extends Rows
         }
         return [
             DateTimer::make('from')
-                ->title('Start At')
+                ->title('Начало дня выгрузки')->help('Начиная с какого дня будет выбирать файл загруженный в базу')
                 ->required(),
             DateTimer::make('to')
-                ->title('End At')
+                ->title('Последний день выгрузки')->help('Выберите день, который будет считаться последним днем для выбора файлов.')
                 ->required(),
             Select::make('depo')
                 ->options($depos)->multiple()
