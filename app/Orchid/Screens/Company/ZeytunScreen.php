@@ -97,8 +97,6 @@ class ZeytunScreen extends Screen
             foreach ($file->get() as $file){
                 info($file->file_id);
                 Excel::import(new ZeytunImport($file->file_id), storage_path($file->file_url));
-                $file->uploaded = 1;
-                $file->save();
             }
         }
     }

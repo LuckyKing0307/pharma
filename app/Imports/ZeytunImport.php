@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\TabletMatrix;
+use App\Models\UploadedFile;
 use App\Models\ZeytunData;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,11 +13,13 @@ use Maatwebsite\Excel\Concerns\RemembersRowNumber;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Events\AfterImport;
 
-class ZeytunImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReading, WithBatchInserts
+class ZeytunImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReading,WithEvents, WithBatchInserts
 {
-    use RemembersRowNumber, Importable;
+    use RemembersRowNumber, Importable, RegistersEventListeners;
 
     public string $firm = 'zeytun';
     public string $file_id;
@@ -82,6 +85,17 @@ class ZeytunImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReadi
                         'region_name' => $region_name,
                     ]);
                 }
+            }
+        }
+    }
+
+    public static function afterImport(AfterImport $event)
+    {
+        $file = UploadedFile::where(['which_depo' => 'zeytun'])->where(['uploaded' => 0]);
+        if ($file->exists()) {
+            foreach ($file->get() as $file) {
+                $file->uploaded = 1;
+                $file->save();
             }
         }
     }
