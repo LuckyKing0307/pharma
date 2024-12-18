@@ -5,14 +5,18 @@ namespace App\Orchid\Screens;
 use App\Exports\TabletsExport;
 use App\Jobs\ProcessPodcast;
 use App\Models\ExportFiles;
+use App\Orchid\Layouts\ExportCreate;
 use App\Orchid\Layouts\ExportFiles as Table;
+use App\Orchid\Layouts\UploadFile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Orchid\Alert\Alert;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Screen;
 use Maatwebsite\Excel\Facades\Excel;
+use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
 
 class ExportScreen extends Screen
@@ -47,7 +51,11 @@ class ExportScreen extends Screen
     {
 
         return [
-            Button::make('Create File')->method('download')->icon('plus'),
+//            Button::make('Create File')->method('download')->icon('plus'),
+            ModalToggle::make('Create File')
+                ->modal('uploadFile')
+                ->method('download')
+                ->icon('plus'),
         ];
     }
 
@@ -60,6 +68,9 @@ class ExportScreen extends Screen
     {
         return [
             Table::class,
+            Layout::modal('uploadFile', ExportCreate::class)
+                ->title('Upload File')
+                ->applyButton('Upload'),
         ];
     }
 
@@ -69,15 +80,16 @@ class ExportScreen extends Screen
         $file->delete();
     }
 
-    public function download()
+    public function download(Request $request)
     {
+
+        $data = $request->all();
         $file = new ExportFiles([
             'file_url' => Carbon::now()->format('Y-m-d'),
         ]);
         $file->save();
-        info($file);
         Toast::success('Started to generate excel file');
-        ProcessPodcast::dispatch($file->id);
+        ProcessPodcast::dispatch($file->id,$data);
 //        $export->handle();
     }
 }

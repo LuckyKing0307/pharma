@@ -93,11 +93,13 @@ class Others implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
         'all_sales_price' => 0,
     ]];
     public $region;
+    public $filter;
     public $tablets_data;
 
-    public function __construct($tablets)
+    public function __construct($tablets,$filter)
     {
         $this->tablets_data = $tablets;
+        $this->filter = $filter;
 
     }
     /**

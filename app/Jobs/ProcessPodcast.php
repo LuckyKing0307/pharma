@@ -17,12 +17,14 @@ class ProcessPodcast implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $file;
+    public $filter;
     /**
      * Create a new job instance.
      */
-    public function __construct($file_id)
+    public function __construct($file_id,$data)
     {
        $this->file = $file_id;
+       $this->filter = $data;
     }
 
     /**
@@ -32,7 +34,7 @@ class ProcessPodcast implements ShouldQueue
     {
         try {
             $startTime = microtime(true);
-            (new TabletsExport())->store('public/'.Carbon::now()->format('Y-m-d').'.xlsx');
+            (new TabletsExport($this->filter))->store('public/'.Carbon::now()->format('Y-m-d').'.xlsx');
             $endTime = microtime(true);
             $timeTaken = $endTime - $startTime;
             $users = User::all();
@@ -40,8 +42,11 @@ class ProcessPodcast implements ShouldQueue
                 $user->notify(new TaskCompleted($this->file, $timeTaken));
             }
         } catch (\Exception $e){
-            $user->notify(new TaskCompleted($this->file, 0));
             info($e);
+            $users = User::all();
+            foreach ($users as $user) {
+                $user->notify(new TaskCompleted($this->file, 0));
+            }
         }
 
 

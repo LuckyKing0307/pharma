@@ -91,11 +91,24 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
         'all_sales' => 0,
         'all_sales_price' => 0,
     ]];
-    public $region;
 
-    public function __construct($region)
+    public $depo_models = [
+        'avromed' => \App\Models\AvromedData::class,
+        'azerimed' => \App\Models\AzerimedData::class,
+        'aztt' => \App\Models\AzttData::class,
+        'epidbiomed' => \App\Models\EpidbiomedData::class,
+        'pasha-k' => \App\Models\PashaData::class,
+        'radez' => \App\Models\RadezData::class,
+        'sonar' => \App\Models\SonarData::class,
+        'zeytun' => \App\Models\ZeytunData::class,
+    ];
+    public $region;
+    public $filter;
+
+    public function __construct($region,$filter)
     {
         $this->region = $region;
+        $this->filter = $filter;
     }
     /**
      * @return array
@@ -105,53 +118,67 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
     {
         $tablets = MainTabletMatrix::all();
         $region = $this->region;
+        $results = [];
         foreach ($tablets as $tablet) {
             $tablet_data = [];
-            $pasha_data = 'pasha-k';
-            $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed], ['region_name','=',$region->avromed]])->orWhere([['tablet_name', '=', $tablet->avromed], ['main_parent','=',$region->avromed]]);
-            $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed], ['region_name','=',$region->azerimed]]);
-            $pasha = PashaData::where([['tablet_name', '=', $tablet->pasha], ['region_name','=',$region->$pasha_data]]);
-            $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar],['aptek_name', '!=', ''], ['region_name','=',$region->sonar]]);
-            $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun],['aptek_name', '!=', ''], ['region_name','=',$region->zeytun]]);
-            $radez = RadezData::where([['tablet_name', '=', $tablet->radez],['aptek_name', '!=', '']]);
-            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]]);
-            if (is_array(json_decode($region->radez,1))){
-                foreach (json_decode($region->radez,1) as $radez_aptek){
-                    $radez = $radez->orWhere([['tablet_name', '=', $tablet->radez],['aptek_name', '=', $radez_aptek]]);
+
+            if (in_array('all', $this->filter['depo'])) {
+                foreach ($this->depo_models as $depo => $model) {
+                    $where = [['tablet_name', '=', $tablet->$depo]];
+                    if (isset($tablet->$depo) and $tablet->$depo!=''){
+                        if (is_array(json_decode($region->$depo,1))){
+                            foreach (json_decode($region->$depo,1) as $radez_aptek){
+                                $where[] = ['aptek_name', '=', $radez_aptek];
+                            }
+                        }else{
+                            $where[] = ['region_name','=',$region->$depo];
+                        }
+
+                        if ($depo=='sonar' or $depo=='zeytun' or $depo=='radez'){
+                            $where[] = ['aptek_name', '!=', ''];
+
+                            $results[] = $model::where($where);
+                        }
+                        elseif ($depo=='avromed'){
+                            $results[] = $model::where($where)->orWhere([['tablet_name', '=', $tablet->avromed], ['main_parent','=',$region->avromed]]);
+                        }
+                        else {
+                            $results[] = $model::where($where);
+                        }
+                    }
                 }
             }else{
-                    $radez = $radez->where('region_name', 'like', '%'.$region->radez.'%');
-            }
-            if (is_array(json_decode($region->epidbiomed,1))){
-                foreach (json_decode($region->epidbiomed,1) as $epid_aptek){
-                    $epidbiomed = $epidbiomed->orWhere([['tablet_name', '=', $tablet->epidbiomed],['region_name', '=', $epid_aptek]]);
+                foreach ($this->filter['depo'] as $depo) {
+                    if (array_key_exists($depo, $this->depo_models)) {
+                        $model = $this->depo_models[$depo];
+                        $where = [['tablet_name', '=', $tablet->$depo]];
+                        if (isset($tablet->$depo) and $tablet->$depo!='') {
+                            if (is_array(json_decode($region->$depo, 1))) {
+                                foreach (json_decode($region->$depo, 1) as $radez_aptek) {
+                                    $where[] = ['aptek_name', '=', $radez_aptek];
+                                }
+                            } else {
+                                $where[] = ['region_name', '=', $region->$depo];
+                            }
+
+                            if ($depo == 'sonar' or $depo == 'zeytun' or $depo == 'radez') {
+                                $where[] = ['aptek_name', '!=', ''];
+
+                                $results[] = $model::where($where);
+                            } elseif ($depo == 'avromed') {
+                                $results[] = $model::where($where)->orWhere([['tablet_name', '=', $tablet->avromed], ['main_parent', '=', $region->avromed]]);
+                            } else {
+                                $results[] = $model::where($where);
+                            }
+                        }
+                    }
                 }
-            }else{
-                $epidbiomed = $epidbiomed->where('region_name', 'like', '%'.$region->epidbiomed.'%');
             }
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
-            if ($region->avromed){
-                $tablet_data = $this->getFile($tablet_data, $avromed);
-            }
-            if ($region->azerimed){
-                $tablet_data = $this->getFile($tablet_data, $azerimed);
-            }
-            if ($region->epidbiomed){
-                $tablet_data = $this->getFile($tablet_data, $epidbiomed);
-            }
-            if ($region->$pasha_data){
-                $tablet_data = $this->getFile($tablet_data, $pasha);
-            }
-            if ($region->sonar){
-                $tablet_data = $this->getFile($tablet_data, $sonar);
-            }
-            if ($region->zeytun){
-                $tablet_data = $this->getFile($tablet_data, $zeytun);
-            }
-            if ($region->radez){
-                $tablet_data = $this->getFile($tablet_data, $radez);
+            foreach ($results as $result){
+                $tablet_data = $this->getFile($tablet_data, $result);
             }
             $tablet_data['all_sales'] = 0;
             for ($i = 1; $i <= 12; $i++) {
@@ -189,6 +216,11 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
         }
         foreach ($tablets->get() as $tablet) {
             $file = UploadedFile::where(['file_id' => $tablet->uploaded_file_id]);
+            if (isset($this->filter['from']) and $this->filter['from']){
+                $file->where([['uploaded_date', '>=', $this->filter['from']]]);
+            }  if (isset($this->filter['to']) and $this->filter['to']){
+                $file->where([['uploaded_date', '<=', $this->filter['to']]]);
+            }
             if ($file->exists()){
                 $file = $file->get()->first();
                 if ($file->uploaded_date){

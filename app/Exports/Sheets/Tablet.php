@@ -26,9 +26,11 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
 {
     use Exportable;
-    public $regions_array = [0=>["a"=>'', 'name'=>'Лекарства']];
+
+    public $regions_array = [0 => ["a" => '', 'name' => 'Лекарства']];
+    public $filter;
     public $tablets = [0 => [
-        'a' =>'',
+        'a' => '',
         'tablet_name' => 'SKU',
         'price' => 'Net prices',
         1 => 'Jan',
@@ -53,13 +55,13 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
         27 => 'Jul',
         28 => 'Avg',
         29 => 'Sep',
-        30 =>  'Oct',
-        31 =>  'Nov',
-        32 =>  'Dec',
+        30 => 'Oct',
+        31 => 'Nov',
+        32 => 'Dec',
         'all_sales' => 'Total qty.',
         'all_sales_price' => 'Closing stock',
-    ],1 => [
-        'a' =>'',
+    ], 1 => [
+        'a' => '',
         'tablet_name' => '',
         'price' => '',
         1 => 0,
@@ -90,6 +92,21 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
         'all_sales' => 0,
         'all_sales_price' => 0,
     ]];
+    public $depo_models = [
+        'avromed' => \App\Models\AvromedData::class,
+        'azerimed' => \App\Models\AzerimedData::class,
+        'aztt' => \App\Models\AzttData::class,
+        'epidbiomed' => \App\Models\EpidbiomedData::class,
+        'pasha-k' => \App\Models\PashaData::class,
+        'radez' => \App\Models\RadezData::class,
+        'sonar' => \App\Models\SonarData::class,
+        'zeytun' => \App\Models\ZeytunData::class,
+    ];
+
+    public function __construct($data)
+    {
+        $this->filter = $data;
+    }
 
     /**
      * @return array
@@ -97,46 +114,69 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
     public function collection(): Collection
     {
         $tablets = MainTabletMatrix::all();
+        $results = [];
         foreach ($tablets as $tablet) {
             $tablet_data = [];
-            $pasha_data = 'pasha-k';
-            $avromed = AvromedData::where([['tablet_name', '=', $tablet->avromed]]);
-            $azzt = AzttData::where([['tablet_name', '=', $tablet->aztt],['aptek_name', '!=', '']]);
-            $epidbiomed = EpidbiomedData::where([['tablet_name', '=', $tablet->epidbiomed]])->where('region_name', null);
-            $azerimed = AzerimedData::where([['tablet_name', '=', $tablet->azerimed]]);
-            $pasha = PashaData::where([['tablet_name', '=', $tablet->$pasha_data]]);
-            $radez = RadezData::where([['tablet_name', '=', $tablet->radez]])->where('aptek_name', null);
-            $sonar = SonarData::where([['tablet_name', '=', $tablet->sonar]]);
-            $zeytun = ZeytunData::where([['tablet_name', '=', $tablet->zeytun]])->where('aptek_name', null);
+            if (in_array('all', $this->filter['depo'])) {
+                foreach ($this->depo_models as $depo => $model) {
+                        $where = [['tablet_name', '=', $tablet->$depo]];
+                    if (isset($tablet->$depo) and $tablet->$depo!='') {
+                        if ($depo == 'aztt') {
+                            $where[] = ['aptek_name', '!=', ''];
+                            $results[] = $model::where($where);
+                        } elseif ($depo == 'radez' or $depo == 'zeytun') {
+                            $results[] = $model::where($where)->where('aptek_name', null);
+                        } elseif ($depo == 'epidbiomed') {
+                            $results[] = $model::where($where)->where('region_name', null);
+                        } else {
+                            $results[] = $model::where($where);
+                        }
+                    }
+                }
+            }else{
+                foreach ($this->filter['depo'] as $depo) {
+                    if (array_key_exists($depo, $this->depo_models)) {
+                        $model = $this->depo_models[$depo];
+                        $where = [['tablet_name', '=', $tablet->$depo]];
+                        if (isset($tablet->$depo) and $tablet->$depo!='') {
+                            if ($depo == 'aztt') {
+                                $where[] = ['aptek_name', '!=', ''];
+                                $results[] = $model::where($where);
+                            } elseif ($depo == 'radez' or $depo == 'zeytun') {
+                                $results[] = $model::where($where)->where('aptek_name', null);
+                            } elseif ($depo == 'epidbiomed') {
+                                $results[] = $model::where($where)->where('region_name', null);
+                            } else {
+                                $results[] = $model::where($where);
+                            }
+                        }
+                    }
+                }
+            }
             $tablet_data['a'] = '';
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
-            $tablet_data = $this->getFile($tablet_data, $avromed);
-            $tablet_data = $this->getFile($tablet_data, $azzt);
-            $tablet_data = $this->getFile($tablet_data, $epidbiomed);
-            $tablet_data = $this->getFile($tablet_data, $azerimed);
-            $tablet_data = $this->getFile($tablet_data, $pasha);
-            $tablet_data = $this->getFile($tablet_data, $radez);
-            $tablet_data = $this->getFile($tablet_data, $sonar);
-            $tablet_data = $this->getFile($tablet_data, $zeytun);
+            foreach ($results as $result){
+                $tablet_data = $this->getFile($tablet_data, $result);
+            }
             $tablet_data['all_sales'] = 0;
             for ($i = 1; $i <= 12; $i++) {
-                if (isset($tablet_data[$i])){
-                    $tablet_data['all_sales'] =  $tablet_data['all_sales']+$tablet_data[$i];
+                if (isset($tablet_data[$i])) {
+                    $tablet_data['all_sales'] = $tablet_data['all_sales'] + $tablet_data[$i];
                 }
             }
             $price = str_replace(',', '.', $tablet_data['price']);
-            if ($tablet_data['all_sales']>80000){
+            if ($tablet_data['all_sales'] > 80000) {
                 $tablet_data['all_sales'] = 0;
             }
-            $tablet_data['all_sales_price'] = $price*floatval($tablet_data['all_sales']);
-            $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
-            $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+($price*floatval($tablet_data['all_sales']));
+            $tablet_data['all_sales_price'] = $price * floatval($tablet_data['all_sales']);
+            $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales'] + $tablet_data['all_sales'];
+            $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price'] + ($price * floatval($tablet_data['all_sales']));
             $this->tablets[] = $tablet_data;
-            for ($i = 1; $i<=12; $i++){
+            for ($i = 1; $i <= 12; $i++) {
                 $this->tablets[1][$i] += $tablet_data[$i];
-                if ($this->tablets[1][$i]!='' and $this->tablets[1][$i]>0){
-                    $this->tablets[1][$i+20] += $tablet_data[$i+20];
+                if ($this->tablets[1][$i] != '' and $this->tablets[1][$i] > 0) {
+                    $this->tablets[1][$i + 20] += $tablet_data[$i + 20];
                 }
             }
         }
@@ -146,42 +186,46 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
     public function getFile($data, $tablets)
     {
         for ($i = 1; $i <= 13; $i++) {
-            if (!isset($data[$i])){
+            if (!isset($data[$i])) {
                 $data[$i] = 0;
             }
         }
         $data[13] = '';
         for ($i = 21; $i <= 32; $i++) {
-            if (!isset($data[$i])){
+            if (!isset($data[$i])) {
                 $data[$i] = 0;
             }
         }
         $price = str_replace(',', '.', $data['price']);
         foreach ($tablets->get() as $tablet) {
             $file = UploadedFile::where(['file_id' => $tablet->uploaded_file_id]);
-            if ($file->exists()){
+            if (isset($this->filter['from']) and $this->filter['from']){
+                $file->where([['uploaded_date', '>=', $this->filter['from']]]);
+            }  if (isset($this->filter['to']) and $this->filter['to']){
+                $file->where([['uploaded_date', '<=', $this->filter['to']]]);
+            }
+            if ($file->exists()) {
                 $file = $file->get()->first();
-                if ($file->uploaded_date){
-
-
+                if ($file->uploaded_date) {
                     $data[Carbon::make($file->uploaded_date)->month] += floatval($tablet->sales_qty);
-                    $data[Carbon::make($file->uploaded_date)->month+20] += floatval($tablet->sales_qty)*floatval($price);
-                    if ($data[Carbon::make($file->uploaded_date)->month]>80000){
+                    $data[Carbon::make($file->uploaded_date)->month + 20] += floatval($tablet->sales_qty) * floatval($price);
+                    if ($data[Carbon::make($file->uploaded_date)->month] > 80000) {
                         $data[Carbon::make($file->uploaded_date)->month] = 0;
-                        $data[Carbon::make($file->uploaded_date)->month+20] = 0;
+                        $data[Carbon::make($file->uploaded_date)->month + 20] = 0;
                     }
-                }else{
+                } else {
                     $data[Carbon::now()->month] += floatval($tablet->sales_qty);
-                    $data[Carbon::now()->month+20] += floatval($tablet->sales_qty)*floatval($price);
-                    if ($data[Carbon::now()->month]>80000){
+                    $data[Carbon::now()->month + 20] += floatval($tablet->sales_qty) * floatval($price);
+                    if ($data[Carbon::now()->month] > 80000) {
                         $data[Carbon::now()->month] = 0;
-                        $data[Carbon::now()->month+20] = 0;
+                        $data[Carbon::now()->month + 20] = 0;
                     }
                 }
             }
         }
         return $data;
     }
+
     /**
      * @return string
      */

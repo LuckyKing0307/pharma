@@ -14,7 +14,11 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 class TabletsExport implements WithMultipleSheets, ShouldQueue, ShouldAutoSize
 {
     use Exportable;
-
+    public $filter;
+    public function __construct($data)
+    {
+        $this->filter = $data;
+    }
     /**
      * @return array
      */
@@ -22,13 +26,17 @@ class TabletsExport implements WithMultipleSheets, ShouldQueue, ShouldAutoSize
     {
         $sheets = [];
 
-        $tablets = new Tablet();
+        $tablets = new Tablet($this->filter);
         $sheets[] = $tablets;
-        $regions = RegionMatrix::all();
-        foreach ($regions as $region){
-            $sheets[] = new Region($region);
+        if (in_array('all', $this->filter['region'])) {
+            $regions = RegionMatrix::all();
+        }else{
+            $regions = RegionMatrix::whereIn('id',$this->filter['region'])->get();
         }
-        $sheets[] = new Others($sheets);
+        foreach ($regions as $region){
+            $sheets[] = new Region($region,$this->filter);
+        }
+        $sheets[] = new Others($sheets,$this->filter);
 
         return $sheets;
     }
