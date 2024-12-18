@@ -68,7 +68,7 @@ class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatch
                 $region_name = str_replace('İ', 'a', $region_name);
             }
             if ($row[1]!='Итог' and $row[1]!=''){
-                $tablet = ZeytunData::where(['aptek_name' => null])->orderBy('created_at', 'desc');
+                $tablet = ZeytunData::where([['aptek_name', '=', null], ['uploaded_file_id','=',$this->file_id]])->orderBy('created_at', 'desc');
                 if ($tablet->exists()){
                     $tablet = $tablet->first();
                     ZeytunData::create([
@@ -91,11 +91,11 @@ class ZeytunImport implements ToModel, WithStartRow, WithChunkReading, WithBatch
 
     public function chunkSize(): int
     {
-        return 10000;
+        return 10;
     }
 
     public function batchSize(): int
     {
-        return 10000;
+        return 10;
     }
 }
