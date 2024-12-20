@@ -114,116 +114,140 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
     public function collection(): Collection
     {
         $tablets = MainTabletMatrix::all();
+
         foreach ($tablets as $tablet) {
-            $tablet_data = [];
-            $results = [];
-            if (in_array('all', $this->filter['depo'])) {
-                foreach ($this->depo_models as $depo => $model) {
-                        $where = [['tablet_name', '=', $tablet->$depo]];
-                    if ($tablet->$depo!='') {
-                        if ($depo == 'aztt') {
-                            $where[] = ['aptek_name', '!=', ''];
-                            $results[] = $model::where($where);
-                        } elseif ($depo == 'radez' or $depo == 'zeytun') {
-                            $results[] = $model::where($where)->where('aptek_name', null);
-                        } elseif ($depo == 'epidbiomed') {
-                            $results[] = $model::where($where)->where('region_name', null);
-                        } else {
-                            $results[] = $model::where($where);
-                        }
-                    }
-                }
-            }else{
-                foreach ($this->filter['depo'] as $depo) {
-                    if (array_key_exists($depo, $this->depo_models)) {
-                        $model = $this->depo_models[$depo];
-                        $where = [['tablet_name', '=', $tablet->$depo]];
-                        if ($tablet->$depo and $tablet->$depo!='') {
-                            if ($depo === 'aztt') {
-                                $where[] = ['aptek_name', '!=', ''];
-                                $results[] = $model::where($where);
-                            } elseif ($depo === 'radez' or $depo === 'zeytun') {
-                                $results[] = $model::where($where)->where('aptek_name', null);
-                            } elseif ($depo === 'epidbiomed') {
-                                $results[] = $model::where($where)->where('region_name', null);
-                            } else {
-                                $results[] = $model::where($where);
-                            }
-                        }
-                    }
-                }
-            }
-            $tablet_data['a'] = '';
-            $tablet_data['tablet_name'] = $tablet->mainname;
-            $tablet_data['price'] = $tablet->price;
-            foreach ($results as $result){
-                $tablet_data = $this->getFile($tablet_data, $results);
+            $tablet_data = [
+                'a' => '',
+                'tablet_name' => $tablet->mainname,
+                'price' => $tablet->price,
+            ];
+
+            $results = $this->processTablet($tablet);
+
+            foreach ($results as $result) {
+                $tablet_data = $this->getFile($tablet_data, $result);
             }
             $tablet_data['all_sales'] = 0;
+            // Подсчет общего объема продаж
             for ($i = 1; $i <= 12; $i++) {
                 if (isset($tablet_data[$i])) {
-                    $tablet_data['all_sales'] = $tablet_data['all_sales'] + $tablet_data[$i];
+                    $tablet_data['all_sales'] += $tablet_data[$i];
                 }
             }
-            $price = str_replace(',', '.', $tablet_data['price']);
+
+            // Учет лимита продаж
             if ($tablet_data['all_sales'] > 80000) {
                 $tablet_data['all_sales'] = 0;
             }
+
+            // Подсчет общей стоимости продаж
+            $price = str_replace(',', '.', $tablet_data['price']);
             $tablet_data['all_sales_price'] = $price * floatval($tablet_data['all_sales']);
-            $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales'] + $tablet_data['all_sales'];
-            $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price'] + ($price * floatval($tablet_data['all_sales']));
-            $this->tablets[] = $tablet_data;
+
+            // Суммирование общих данных
+            $this->tablets[1]['all_sales'] += $tablet_data['all_sales'];
+            $this->tablets[1]['all_sales_price'] += $tablet_data['all_sales_price'];
+
+            // Подсчет помесячных данных
             for ($i = 1; $i <= 12; $i++) {
-                $this->tablets[1][$i] += $tablet_data[$i];
-                if ($this->tablets[1][$i] != '' and $this->tablets[1][$i] > 0) {
-                    $this->tablets[1][$i + 20] += $tablet_data[$i + 20];
+                $this->tablets[1][$i] += $tablet_data[$i] ?? 0;
+                if (!empty($this->tablets[1][$i]) && $this->tablets[1][$i] > 0) {
+                    $this->tablets[1][$i + 20] += $tablet_data[$i + 20] ?? 0;
                 }
             }
+
+            $this->tablets[] = $tablet_data;
         }
+
         return collect($this->tablets);
+    }
+
+    private function processTablet($tablet): array
+    {
+        $results = [];
+
+        $depo_list = in_array('all', $this->filter['depo'])
+            ? array_keys($this->depo_models)
+            : $this->filter['depo'];
+
+        foreach ($depo_list as $depo) {
+            if (!isset($this->depo_models[$depo])) {
+                continue;
+            }
+
+            $model = $this->depo_models[$depo];
+            $tablet_name = $tablet->$depo;
+
+            if (empty($tablet_name)) {
+                continue;
+            }
+
+            $where = [['tablet_name', '=', $tablet_name]];
+
+            if ($depo === 'aztt') {
+                $where[] = ['aptek_name', '!=', ''];
+            } elseif (in_array($depo, ['radez', 'zeytun'])) {
+                $results[] = $model::where($where)->whereNull('aptek_name')->get();
+                continue;
+            } elseif ($depo === 'epidbiomed') {
+                $results[] = $model::where($where)->whereNull('region_name')->get();
+                continue;
+            }
+
+            $results[] = $model::where($where)->get();
+        }
+
+        return $results;
     }
 
     public function getFile($data, $tablets)
     {
-        for ($i = 1; $i <= 13; $i++) {
-            if (!isset($data[$i])) {
-                $data[$i] = 0;
-            }
+        // Инициализация ключей
+        foreach (range(1, 13) as $i) {
+            $data[$i] = $data[$i] ?? 0;
+        }
+        foreach (range(21, 32) as $i) {
+            $data[$i] = $data[$i] ?? 0;
         }
         $data[13] = '';
-        for ($i = 21; $i <= 32; $i++) {
-            if (!isset($data[$i])) {
-                $data[$i] = 0;
+        $price = floatval(str_replace(',', '.', $data['price']));
+
+        foreach ($tablets as $tablet) {
+            $fileQuery = UploadedFile::where('file_id', $tablet->uploaded_file_id);
+
+            // Применение фильтров
+            if (!empty($this->filter['from'])) {
+                $fileQuery->where('uploaded_date', '>=', $this->filter['from']);
+            }
+            if (!empty($this->filter['to'])) {
+                $fileQuery->where('uploaded_date', '<=', $this->filter['to']);
+            }
+
+            if ($fileQuery->exists()) {
+                $file = $fileQuery->first();
+                $month = $file->uploaded_date
+                    ? Carbon::make($file->uploaded_date)->month
+                    : Carbon::now()->month;
+                $this->updateSalesData($data, $month, $tablet->sales_qty, $price);
             }
         }
-        $price = str_replace(',', '.', $data['price']);
-        foreach ($tablets->get() as $tablet) {
-            $file = UploadedFile::where(['file_id' => $tablet->uploaded_file_id]);
-            if (isset($this->filter['from']) and $this->filter['from']){
-                $file->where([['uploaded_date', '>=', $this->filter['from']]]);
-            }  if (isset($this->filter['to']) and $this->filter['to']){
-                $file->where([['uploaded_date', '<=', $this->filter['to']]]);
-            }
-            if ($file->exists()) {
-                $file = $file->get()->first();
-                if ($file->uploaded_date) {
-                    $data[Carbon::make($file->uploaded_date)->month] += floatval($tablet->sales_qty);
-                    $data[Carbon::make($file->uploaded_date)->month + 20] += floatval($tablet->sales_qty) * floatval($price);
-                    if ($data[Carbon::make($file->uploaded_date)->month] > 80000) {
-                        $data[Carbon::make($file->uploaded_date)->month] = 0;
-                        $data[Carbon::make($file->uploaded_date)->month + 20] = 0;
-                    }
-                } else {
-                    $data[Carbon::now()->month] += floatval($tablet->sales_qty);
-                    $data[Carbon::now()->month + 20] += floatval($tablet->sales_qty) * floatval($price);
-                    if ($data[Carbon::now()->month] > 80000) {
-                        $data[Carbon::now()->month] = 0;
-                        $data[Carbon::now()->month + 20] = 0;
-                    }
-                }
-            }
-        }
+
         return $data;
+    }
+
+    /**
+     * Обновляет данные о продажах.
+     */
+    private function updateSalesData(&$data, $month, $salesQty, $price)
+    {
+        $data[$month] += floatval($salesQty);
+        $data[$month + 20] += floatval($salesQty) * $price;
+
+        // Лимит продаж
+        if ($data[$month] > 80000) {
+            $data[$month] = 0;
+            $data[$month + 20] = 0;
+        }
     }
 
     /**
