@@ -114,13 +114,13 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
     public function collection(): Collection
     {
         $tablets = MainTabletMatrix::all();
-        $results = [];
         foreach ($tablets as $tablet) {
             $tablet_data = [];
+            $results = [];
             if (in_array('all', $this->filter['depo'])) {
                 foreach ($this->depo_models as $depo => $model) {
                         $where = [['tablet_name', '=', $tablet->$depo]];
-                    if (isset($tablet->$depo) and $tablet->$depo!='') {
+                    if ($tablet->$depo!='') {
                         if ($depo == 'aztt') {
                             $where[] = ['aptek_name', '!=', ''];
                             $results[] = $model::where($where);
@@ -138,13 +138,13 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                     if (array_key_exists($depo, $this->depo_models)) {
                         $model = $this->depo_models[$depo];
                         $where = [['tablet_name', '=', $tablet->$depo]];
-                        if (isset($tablet->$depo) and $tablet->$depo!='') {
-                            if ($depo == 'aztt') {
+                        if ($tablet->$depo and $tablet->$depo!='') {
+                            if ($depo === 'aztt') {
                                 $where[] = ['aptek_name', '!=', ''];
                                 $results[] = $model::where($where);
-                            } elseif ($depo == 'radez' or $depo == 'zeytun') {
+                            } elseif ($depo === 'radez' or $depo === 'zeytun') {
                                 $results[] = $model::where($where)->where('aptek_name', null);
-                            } elseif ($depo == 'epidbiomed') {
+                            } elseif ($depo === 'epidbiomed') {
                                 $results[] = $model::where($where)->where('region_name', null);
                             } else {
                                 $results[] = $model::where($where);
@@ -157,7 +157,7 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             $tablet_data['tablet_name'] = $tablet->mainname;
             $tablet_data['price'] = $tablet->price;
             foreach ($results as $result){
-                $tablet_data = $this->getFile($tablet_data, $result);
+                $tablet_data = $this->getFile($tablet_data, $results);
             }
             $tablet_data['all_sales'] = 0;
             for ($i = 1; $i <= 12; $i++) {
