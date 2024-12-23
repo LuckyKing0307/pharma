@@ -38,6 +38,7 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue, WithEvent
 
     public function model(array $row)
     {
+
         $text = str_replace(' (Венгрия)', '', $row[7]);
         $text = str_replace(' (Кипр)', '', $text);
         $text = str_replace('№ ', '№', $text);
