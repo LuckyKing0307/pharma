@@ -17,7 +17,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Events\AfterImport;
 
-class ZeytunImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReading,WithEvents, WithBatchInserts
+class ZeytunImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReading, WithEvents, WithBatchInserts
 {
     use RemembersRowNumber, Importable, RegistersEventListeners;
 
@@ -27,18 +27,19 @@ class ZeytunImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReadi
 
     public function __construct($file_id)
     {
-        $this->file_id= $file_id;
+        $this->file_id = $file_id;
     }
+
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+     * @param array $row
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
     public function model(array $row)
     {
         if (str_contains($row['1'], ' шт') or str_contains($row['1'], ' упак') or str_contains($row['1'], ' флак') or str_contains($row['1'], ' тюб')) {
-            $check = ZeytunData::where([['tablet_name', '=', $row[1]],['sales_qty', '=', $row[2]],['uploaded_file_id','=',$this->file_id]]);
-            if (!$check->exists()){
+            $check = ZeytunData::where([['tablet_name', '=', $row[1]], ['sales_qty', '=', $row[2]], ['uploaded_file_id', '=', $this->file_id]]);
+            if (!$check->exists()) {
                 ZeytunData::create([
                     'tablet_name' => $row[1],
                     'sales_qty' => $row[2],
@@ -54,19 +55,19 @@ class ZeytunImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReadi
                 ->orWhere(['radez' => $row[$this->tabletNameRow]])
                 ->orWhere(['sonar' => $row[$this->tabletNameRow]])
                 ->orWhere(['zeytun' => $row[$this->tabletNameRow]]);
-            if (!$tablets->exists()){
+            if (!$tablets->exists()) {
                 TabletMatrix::create([
                     $this->firm => $row[$this->tabletNameRow],
                 ]);
-            } elseif ($row[$this->tabletNameRow]!='Итог'){
+            } elseif ($row[$this->tabletNameRow] != 'Итог') {
                 $tablets->get();
-                foreach ($tablets as $tablet){
+                foreach ($tablets as $tablet) {
                     $tablet->update([$this->firm => $row[$this->tabletNameRow]]);
                 }
             }
-        }else{
+        } else {
             $region_name = '';
-            if (count(explode(' ', $row[1]))>1) {
+            if (count(explode(' ', $row[1])) > 1) {
                 $words = explode(' ', $row[1]);
                 $result = null;
                 for ($i = 1; $i < count($words); $i++) {
@@ -75,19 +76,20 @@ class ZeytunImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReadi
                         break;
                     }
                 }
-                if ($result != null) {
-                    $region_name = strtolower($result);
-                    $region_name = str_replace('ı', 'i', $region_name);
-                    $region_name = str_replace('Ə', 'a', $region_name);
-                    $region_name = str_replace('İ', 'a', $region_name);
+                if ($result === null) {
+                    $result = 'Нет подходящего слова'; // Если нет подходящего слова
                 }
+                $region_name = strtolower($result);
+                $region_name = str_replace('ı', 'i', $region_name);
+                $region_name = str_replace('Ə', 'a', $region_name);
+                $region_name = str_replace('İ', 'a', $region_name);
             }
-            if ($row[1]!='Итог' and $row[1]!=''){
-                $tablet = ZeytunData::where([['aptek_name', '=', null], ['uploaded_file_id','=',$this->file_id]])->orderBy('created_at', 'desc');
-                if ($tablet->exists()){
+            if ($row[1] != 'Итог' and $row[1] != '') {
+                $tablet = ZeytunData::where([['aptek_name', '=', null], ['uploaded_file_id', '=', $this->file_id]])->orderBy('created_at', 'desc');
+                if ($tablet->exists()) {
                     $tablet = $tablet->first();
                     ZeytunData::create([
-                        'aptek_name' => $row[1]!='' ? $row[1] : 'QWER',
+                        'aptek_name' => $row[1] != '' ? $row[1] : 'QWER',
                         'tablet_name' => $tablet->tablet_name,
                         'sales_qty' => $row[2],
                         'uploaded_date' => Carbon::now(),

@@ -33,7 +33,7 @@ class AzerimedImport implements ToModel, WithChunkReading, ShouldQueue,WithEvent
     {
         if (strtolower($row[0]) != 'müştəri adı' and $row[0] != '' and strtolower($row[3]) != 'miqdarı') {
             $region_name = $row[1] ? explode('|', $row[1])[0] : '';
-            if ($region_name == 'NERIMANO' and $region_name == 'NARIMANO') {
+            if ($region_name == 'NERIMANO' or $region_name == 'NARIMANO') {
                 $region_name = 'NARIMAN';
             }
             AzerimedData::create([
