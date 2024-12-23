@@ -67,10 +67,20 @@ class ZeytunImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReadi
         }else{
             $region_name = '';
             if (count(explode(' ', $row[1]))>1) {
-                $region_name = strtolower(explode(' ', $row[1])[1]);
-                $region_name = str_replace('ı', 'i', $region_name);
-                $region_name = str_replace('Ə', 'a', $region_name);
-                $region_name = str_replace('İ', 'a', $region_name);
+                $words = explode(' ', $row[1]);
+                $result = null;
+                for ($i = 1; $i < count($words); $i++) {
+                    if (!is_numeric($words[$i])) {
+                        $result = $words[$i];
+                        break;
+                    }
+                }
+                if ($result != null) {
+                    $region_name = strtolower($result);
+                    $region_name = str_replace('ı', 'i', $region_name);
+                    $region_name = str_replace('Ə', 'a', $region_name);
+                    $region_name = str_replace('İ', 'a', $region_name);
+                }
             }
             if ($row[1]!='Итог' and $row[1]!=''){
                 $tablet = ZeytunData::where([['aptek_name', '=', null], ['uploaded_file_id','=',$this->file_id]])->orderBy('created_at', 'desc');
