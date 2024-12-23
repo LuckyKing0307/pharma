@@ -13,9 +13,10 @@ use Maatwebsite\Excel\Concerns\RemembersRowNumber;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterImport;
 
-class AzerimedImport implements ToModel, WithChunkReading, ShouldQueue, WithBatchInserts
+class AzerimedImport implements ToModel, WithChunkReading, ShouldQueue,WithEvents, WithBatchInserts
 {
     use RemembersRowNumber, Importable, RegistersEventListeners;
 
