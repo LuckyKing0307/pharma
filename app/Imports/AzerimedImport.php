@@ -79,7 +79,7 @@ class AzerimedImport implements ToModel, WithChunkReading, ShouldQueue,WithEvent
 
     public static function afterImport(AfterImport $event)
     {
-        $file = UploadedFile::where(['which_depo' => 'avromed'])->where(['uploaded' => 0]);
+        $file = UploadedFile::where(['which_depo' => 'azerimed'])->where(['uploaded' => 0]);
         if ($file->exists()) {
             foreach ($file->get() as $file) {
                 $file->uploaded = 1;
