@@ -93,11 +93,7 @@ class AzerimedScreen extends Screen
         $file = UploadedFile::where([['which_depo', '=', 'azerimed'],['uploaded', '=', 0]]);
         if ($file->exists()){
             foreach ($file->get() as $file){
-                info('aaaaaaaaaaaaaaaaaaaa');
-                info($file->file_id);
                 Excel::import(new AzerimedImport($file->file_id), storage_path($file->file_url));
-                $file->uploaded = 1;
-                $file->save();
             }
         }
     }

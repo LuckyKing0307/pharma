@@ -4,16 +4,20 @@ namespace App\Imports;
 
 use App\Models\AzerimedData;
 use App\Models\TabletMatrix;
+use App\Models\UploadedFile;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\RemembersRowNumber;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Events\AfterImport;
 
 class AzerimedImport implements ToModel, WithChunkReading, ShouldQueue, WithBatchInserts
 {
-    use RemembersRowNumber;
+    use RemembersRowNumber, Importable, RegistersEventListeners;
 
     public string $firm = 'azerimed';
     public string $file_id;
@@ -70,5 +74,16 @@ class AzerimedImport implements ToModel, WithChunkReading, ShouldQueue, WithBatc
     public function batchSize(): int
     {
         return 100;
+    }
+
+    public static function afterImport(AfterImport $event)
+    {
+        $file = UploadedFile::where(['which_depo' => 'avromed'])->where(['uploaded' => 0]);
+        if ($file->exists()) {
+            foreach ($file->get() as $file) {
+                $file->uploaded = 1;
+                $file->save();
+            }
+        }
     }
 }
