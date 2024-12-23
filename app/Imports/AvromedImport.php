@@ -38,6 +38,9 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue, WithEvent
 
     public function model(array $row)
     {
+        $text = str_replace(' (Венгрия)', '', $row[7]);
+        $text = str_replace(' (Кипр)', '', $text);
+        $text = str_replace('№ ', '№', $text);
         if (strtolower($row[0]) != 'date' and $row[1] != 'Total' and $row[0] != '' and strtolower($row[7]) != 'Name') {
             AvromedData::create([
                 'branch' => $row[1],
@@ -47,7 +50,7 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue, WithEvent
                 'region' => $row[4],
                 'region_name' => $row[5] != null ? $row[5] : $row[4],
                 'aptek_name' => $row[6],
-                'tablet_name' => str_replace(' (Венгрия)', '', $row[7]),
+                'tablet_name' => $text,
                 'supervisor' => $row[8],
                 'item_code' => $row[9],
                 'client_code' => $row[10],
