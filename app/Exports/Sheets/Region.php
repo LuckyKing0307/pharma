@@ -198,6 +198,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                 $results[] = $model->get();
                 continue;
             } elseif ($depo == 'avromed') {
+                info($model::where($where)->orWhere([['tablet_name', 'like', '%'.$tablet->avromed.'%'], ['main_parent', '=', $region->avromed]])->toSql());
                 $results[] = $model::where($where)->orWhere([['tablet_name', 'like', '%'.$tablet->avromed.'%'], ['main_parent', '=', $region->avromed]])->get();
                 continue;
             } else {
