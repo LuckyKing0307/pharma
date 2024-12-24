@@ -186,7 +186,9 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                     $model = $model::where($orWhere[0]);
                     if (count($orWhere)>1){
                         foreach ($orWhere as $orwhere){
-                            $model = $model->orWhere($orwhere);
+                            if ($orWhere[0]!=$orwhere){
+                                $model = $model->orWhere($orwhere);
+                            }
                         }
                     }
                 }else{
