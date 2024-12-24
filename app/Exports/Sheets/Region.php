@@ -172,29 +172,37 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             }
 
             $where = [['tablet_name', '=', $tablet_name]];
-
-
+            $orWhere = [];
             if (is_array(json_decode($region->$depo, 1))) {
                 foreach (json_decode($region->$depo, 1) as $radez_aptek) {
-                    $where[] = ['aptek_name', '=', $radez_aptek];
+                    $orWhere[] = [['aptek_name', '=', $radez_aptek],['tablet_name', '=', $tablet_name]];
                 }
             } else {
                 $where[] = ['region_name', '=', $region->$depo];
             }
 
-            if ($depo == 'sonar' or $depo == 'zeytun' or $depo == 'radez') {
-                $where[] = ['aptek_name', '!=', ''];
-                $results[] = $model::where($where)->get();
+            if ($depo == 'sonar' or $depo == 'zeytun' or $depo == 'radez' or $depo == 'epidbiomed') {
+                if (count($orWhere)>=1){
+                    $model = $model::where($orWhere[0]);
+                    if (count($orWhere)>1){
+                        foreach ($orWhere as $orwhere){
+                            $model = $model->orWhere($orwhere);
+                        }
+                    }
+                }else{
+                    $where[] = ['aptek_name', '!=', ''];
+                    $model = $model::where($where);
+                }
+                $results[] = $model->get();
                 continue;
             } elseif ($depo == 'avromed') {
                 $results[] = $model::where($where)->orWhere([['tablet_name', '=', $tablet->avromed], ['main_parent', '=', $region->avromed]])->get();
                 continue;
             } else {
-                $results[] = $model::where($where)->get();
+                $model = $model::where($where);
+                $results[] = $model->get();
                 continue;
             }
-
-            $results[] = $model::where($where)->get();
         }
 
         return $results;
