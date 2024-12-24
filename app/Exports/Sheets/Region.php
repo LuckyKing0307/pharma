@@ -171,7 +171,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                 continue;
             }
 
-            $where = [['tablet_name', '=', $tablet_name]];
+            $where = [['tablet_name', 'like', $tablet_name]];
             $orWhere = [];
             if (is_array(json_decode($region->$depo, 1))) {
                 foreach (json_decode($region->$depo, 1) as $radez_aptek) {
@@ -198,7 +198,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                 $results[] = $model->get();
                 continue;
             } elseif ($depo == 'avromed') {
-                $results[] = $model::where($where)->orWhere([['tablet_name', '=', $tablet->avromed], ['main_parent', '=', $region->avromed]])->get();
+                $results[] = $model::where($where)->orWhere([['tablet_name', 'like', $tablet->avromed], ['main_parent', '=', $region->avromed]])->get();
                 continue;
             } else {
                 $model = $model::where($where);
