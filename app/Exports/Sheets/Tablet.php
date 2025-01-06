@@ -181,6 +181,7 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             if (empty($tablet_name)) {
                 continue;
             }
+            $tablet_name = str_replace('№ ', '№', $tablet_name);
 
             $where = [['tablet_name', '=', $tablet_name]];
 

@@ -166,6 +166,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
 
             $model = $this->depo_models[$depo];
             $tablet_name = $tablet->$depo;
+            $tablet_name = str_replace('№ ', '№', $tablet_name);
 
             if (empty($tablet_name) or $region->$depo=='' or $region->$depo==null) {
                 continue;

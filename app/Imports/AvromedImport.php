@@ -42,6 +42,7 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue, WithEvent
         $text = str_replace(' (Венгрия)', '', $row[7]);
         $text = str_replace(' (Кипр)', '', $text);
         $text = str_replace('№ ', '№', $text);
+        $text2 = str_replace('№', '№', $text);
         if (strtolower($row[0]) != 'date' and $row[1] != 'Total' and $row[0] != '' and strtolower($row[7]) != 'Name') {
             AvromedData::create([
                 'branch' => $row[1],
@@ -61,22 +62,15 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue, WithEvent
 //                'sale_date' => Carbon::make($row[0]),
                 'uploaded_date' => Carbon::now(),
             ]);
-            $tablets = TabletMatrix::where(['avromed' => $row[$this->tabletNameRow]])
-                ->orWhere(['azerimed' => $row[$this->tabletNameRow]])
-                ->orWhere(['aztt' => $row[$this->tabletNameRow]])
-                ->orWhere(['epidbiomed' => $row[$this->tabletNameRow]])
-                ->orWhere(['pasha-k' => $row[$this->tabletNameRow]])
-                ->orWhere(['radez' => $row[$this->tabletNameRow]])
-                ->orWhere(['sonar' => $row[$this->tabletNameRow]])
-                ->orWhere(['zeytun' => $row[$this->tabletNameRow]]);
+            $tablets = TabletMatrix::where(['avromed' => $text2]);
             if (!$tablets->exists()) {
                 TabletMatrix::create([
-                    $this->firm => $row[$this->tabletNameRow],
+                $this->firm => $text2,
                 ]);
             } elseif ($row[$this->tabletNameRow] != 'Name') {
                 $tablets->get();
                 foreach ($tablets as $tablet) {
-                    $tablet->update([$this->firm => $row[$this->tabletNameRow]]);
+                    $tablet->update([$this->firm => $text2]);
                 }
             }
         }
