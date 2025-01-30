@@ -142,7 +142,7 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
 
             // Подсчет общей стоимости продаж
             $price = str_replace(',', '.', $tablet_data['price']);
-            $tablet_data['all_sales_price'] = $price * floatval($tablet_data['all_sales']);
+            $tablet_data['all_sales_price'] = floatval($price) * floatval($tablet_data['all_sales']);
 
             // Суммирование общих данных
             $this->tablets[1]['all_sales'] += $tablet_data['all_sales'];
@@ -181,22 +181,67 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             if (empty($tablet_name)) {
                 continue;
             }
-
-            $where = [['tablet_name', '=', $tablet_name]];
+            $orWhere = [];
+            $where = [];
+            if (is_array(json_decode($tablet->$depo, 1))) {
+                foreach (json_decode($tablet->$depo, 1) as $tablet_name) {
+                    $orWhere[] = [['tablet_name', '=', $tablet_name]];
+                }
+            } else {
+                $where[] = ['tablet_name', '=', $tablet->$depo];
+            }
 
             if ($depo === 'aztt') {
-                $where[] = ['aptek_name', '!=', ''];
+                if (count($orWhere)>=1){
+                    $res = $model::where($orWhere[0]);
+                    if (count($orWhere)>1){
+                        foreach ($orWhere as $orwhere){
+                            if ($orWhere[0]!=$orwhere){
+                                $res = $res->orWhere($orwhere);
+                            }
+                        }
+                    }
+                    $results[] = $res->get();
+                    continue;
+                }else{
+                    $where[] = ['aptek_name', '!=', ''];
+                    $results[] = $model::where($where)->get();
+                    continue;
+                }
             } elseif (in_array($depo, ['radez', 'zeytun'])) {
-                $results[] = $model::where($where)->whereNull('aptek_name')->get();
-                continue;
+                if (count($orWhere)>=1){
+                    $res = $model::where($orWhere[0]);
+                    if (count($orWhere)>1){
+                        foreach ($orWhere as $orwhere){
+                            if ($orWhere[0]!=$orwhere){
+                                $res = $res->orWhere($orwhere);
+                            }
+                        }
+                    }
+                    $results[] = $res->get();
+                    continue;
+                }else{
+                    $results[] = $model::where($where)->get();
+                    continue;
+                }
             } elseif ($depo === 'epidbiomed') {
                 $results[] = $model::where($where)->whereNull('region_name')->get();
                 continue;
             }
-
-            $results[] = $model::where($where)->get();
+            if (count($orWhere)>=1){
+                $res = $model::where($orWhere[0]);
+                if (count($orWhere)>1){
+                    foreach ($orWhere as $orwhere){
+                        if ($orWhere[0]!=$orwhere){
+                            $res = $res->orWhere($orwhere);
+                        }
+                    }
+                }
+                $results[] = $res->get();
+            }else{
+                $results[] = $model::where($where)->get();
+            }
         }
-
         return $results;
     }
 

@@ -136,9 +136,9 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                 }
             }
             $price = str_replace(',', '.', $tablet_data['price']);
-            $tablet_data['all_sales_price'] = $price*intval($tablet_data['all_sales']);
+            $tablet_data['all_sales_price'] = floatval($price)*floatval($tablet_data['all_sales']);
             $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
-            $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+($price*floatval($tablet_data['all_sales']));
+            $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+(floatval($price)*floatval($tablet_data['all_sales']));
             $this->tablets[] = $tablet_data;
             for ($i = 1; $i<=12; $i++){
                 if (isset($tablet_data[$i]) and isset($this->tablets[1][$i])){
@@ -175,37 +175,36 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             $orWhere = [];
             if (is_array(json_decode($region->$depo, 1))) {
                 foreach (json_decode($region->$depo, 1) as $radez_aptek) {
-                    $orWhere[] = [['aptek_name', '=', $radez_aptek],['tablet_name', '=', $tablet_name]];
+                        if (is_array(json_decode($tablet_name, 1))) {
+                            foreach (json_decode($tablet_name, 1) as $tabs){
+                                $orWhere[] = [['aptek_name', '=', $radez_aptek],['tablet_name', '=', '%'.$tabs.'%']];
+                            }
+                        }else{
+                            $orWhere[] = [['aptek_name', '=', $radez_aptek],['tablet_name', '=', '%'.$tablet_name.'%']];
+                        }
                 }
             } else {
                 $where[] = ['region_name', '=', $region->$depo];
             }
-
-            if ($depo == 'sonar' or $depo == 'zeytun' or $depo == 'radez' or $depo == 'epidbiomed') {
-                if (count($orWhere)>=1){
-                    $model = $model::where($orWhere[0]);
-                    if (count($orWhere)>1){
-                        foreach ($orWhere as $orwhere){
-                            if ($orWhere[0]!=$orwhere){
-                                $model = $model->orWhere($orwhere);
-                            }
-                        }
-                    }
-                }else{
-                    $where[] = ['aptek_name', '!=', ''];
-                    $model = $model::where($where);
-                }
-                $results[] = $model->get();
-                continue;
-            } elseif ($depo == 'avromed') {
-                info($model::where($where)->orWhere([['tablet_name', 'like', '%'.$tablet->avromed.'%'], ['main_parent', '=', $region->avromed]])->toSql());
+            if ($depo == 'avromed') {
                 $results[] = $model::where($where)->orWhere([['tablet_name', 'like', '%'.$tablet->avromed.'%'], ['main_parent', '=', $region->avromed]])->get();
                 continue;
-            } else {
-                $model = $model::where($where);
-                $results[] = $model->get();
-                continue;
             }
+            if (count($orWhere)>=1){
+                $model = $model::where($orWhere[0]);
+                if (count($orWhere)>1){
+                    foreach ($orWhere as $orwhere){
+                        if ($orWhere[0]!=$orwhere){
+                            $model = $model->orWhere($orwhere);
+                        }
+                    }
+                }
+            }else{
+                $where[] = ['aptek_name', '!=', ''];
+                $model = $model::where($where);
+            }
+            $results[] = $model->get();
+
         }
 
         return $results;

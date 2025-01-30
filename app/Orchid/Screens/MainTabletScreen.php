@@ -85,7 +85,11 @@ class MainTabletScreen extends Screen
 
     public function update(Request $request)
     {
-        MainTabletMatrix::find($request->all()['tablet']['id'])->update($request->all()['tablet']);
+        $datas = $request->all()['tablet'];
+        foreach ($datas as $key => $value) {
+            $datas[$key] = isset($datas[$key]) ? json_encode($datas[$key]) : '';
+        }
+        MainTabletMatrix::find($request->all()['tablet']['id'])->update($datas);
     }
 
     public function delete(MainTabletMatrix $tablet)

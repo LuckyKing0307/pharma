@@ -35,28 +35,28 @@ class MainTabletsEditRows extends Rows
                 ->placeholder('Enter price')->required(),
             Relation::make('tablet.avromed')->nullable(1)
                 ->fromModel(TabletMatrix::class, 'avromed', 'avromed')
-                ->title('Avromed'),
+                ->title('Avromed')->multiple(),
             Relation::make('tablet.azerimed')->nullable(1)
                 ->fromModel(TabletMatrix::class, 'azerimed', 'azerimed')
-                ->title('Azerimed'),
+                ->title('Azerimed')->multiple(),
             Relation::make('tablet.aztt')->nullable(1)
                 ->fromModel(TabletMatrix::class, 'aztt', 'aztt')
-                ->title('Aztt'),
+                ->title('Aztt')->multiple(),
             Relation::make('tablet.epidbiomed')->nullable(1)
                 ->fromModel(TabletMatrix::class, 'epidbiomed', 'epidbiomed')
-                ->title('Epidbiomed')->value('tablet.epidbiomed'),
+                ->title('Epidbiomed')->value('tablet.epidbiomed')->multiple(),
             Relation::make('tablet.pasha-k')->nullable(1)
                 ->fromModel(TabletMatrix::class, 'pasha-k', 'pasha-k')
-                ->title('Pasha-k'),
+                ->title('Pasha-k')->multiple(),
             Relation::make('tablet.radez')->nullable(1)
                 ->fromModel(TabletMatrix::class, 'radez', 'radez')
-                ->title('Radez'),
+                ->title('Radez')->multiple(),
             Relation::make('tablet.sonar')->nullable(1)
                 ->fromModel(TabletMatrix::class, 'sonar', 'sonar')
-                ->title('Sonar')->value('tablet.sonar'),
+                ->title('Sonar')->value('tablet.sonar')->multiple(),
             Relation::make('tablet.zeytun')->nullable(1)
                 ->fromModel(TabletMatrix::class, 'zeytun', 'zeytun')
-                ->title('Zeytun'),
+                ->title('Zeytun')->multiple(),
         ];
     }
 }
