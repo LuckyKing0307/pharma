@@ -42,8 +42,8 @@ class ZeytunImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReadi
             $tablet_named = str_replace('(***)', '', $row[1]);
             if (!$check->exists()) {
                 ZeytunData::create([
-                    'tablet_name' => $row[1],
-                    'sales_qty' => $tablet_named,
+                    'tablet_name' => $tablet_named,
+                    'sales_qty' => $row[2],
                     'uploaded_date' => Carbon::now(),
                     'uploaded_file_id' => $this->file_id,
                 ]);
@@ -86,7 +86,7 @@ class ZeytunImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReadi
                 $region_name = str_replace('İ', 'a', $region_name);
             }
             if ($row[1] != 'Итог' and $row[1] != '') {
-                $tablet = ZeytunData::where([['aptek_name', '=', null], ['uploaded_file_id', '=', $this->file_id]])->orderBy('created_at', 'desc');
+                $tablet = ZeytunData::where([['aptek_name', '=', null], ['uploaded_file_id', '=', $this->file_id]])->orderBy('created_at', 'desc')->limit(10);
                 if ($tablet->exists()) {
                     $tablet = $tablet->first();
                     ZeytunData::create([
