@@ -39,10 +39,11 @@ class ZeytunImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReadi
     {
         if (str_contains($row['1'], ' шт') or str_contains($row['1'], ' упак') or str_contains($row['1'], ' флак') or str_contains($row['1'], ' тюб')) {
             $check = ZeytunData::where([['tablet_name', '=', $row[1]], ['sales_qty', '=', $row[2]], ['uploaded_file_id', '=', $this->file_id]]);
+            $tablet_named = str_replace('(***)', '', $row[1]);
             if (!$check->exists()) {
                 ZeytunData::create([
                     'tablet_name' => $row[1],
-                    'sales_qty' => $row[2],
+                    'sales_qty' => $tablet_named,
                     'uploaded_date' => Carbon::now(),
                     'uploaded_file_id' => $this->file_id,
                 ]);
