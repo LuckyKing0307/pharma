@@ -89,7 +89,7 @@ class MainTabletScreen extends Screen
         foreach ($datas as $key => $value) {
             $datas[$key] = isset($datas[$key]) ? json_encode($datas[$key]) : '';
         }
-        MainTabletMatrix::find($request->all()['tablet']['id'])->update($datas);
+        MainTabletMatrix::find($request->all()['tablet']['id'])->update($request->all()['tablet']);
     }
 
     public function delete(MainTabletMatrix $tablet)
