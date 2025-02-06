@@ -101,6 +101,17 @@ class AvromedScreen extends Screen
                 Excel::import(new AvromedImport($file->file_id), storage_path($file->file_url));
             }
         }
+        $tablets_avro = TabletMatrix::whereNotNull('avromed');
+        foreach ($tablets_avro->get() as $tablet){
+            $matrix_tablet = MainTabletMatrix::where(['avromed' => $tablet->avromed]);
+            if ($matrix_tablet->exists()) {
+                $matrix_tablet = $matrix_tablet->get()->first();
+                $matrix_tablet->avromed = preg_replace('/\(.*/', '', $tablet->avromed);
+                $matrix_tablet->save();
+            }
+            $tablet->avromed = preg_replace('/\(.*/', '', $tablet->avromed);
+            $tablet->save();
+        }
     }
 
     public function delete(UploadedFile $file)
