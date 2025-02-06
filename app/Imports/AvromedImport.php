@@ -39,8 +39,8 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue, WithEvent
     public function model(array $row)
     {
 
-        $text = preg_replace('/\(.*/', '', $row[7]);
-//        $text = str_replace('№ ', '№', $text);
+        $text = preg_replace('/\s*\([^)]*\)\s*/', ' ', $row[7]); // Удаляем скобки и пробелы вокруг
+        $text = trim(preg_replace('/\s+/', ' ', $text));
         $text2 = str_replace('№', '№', $text);
         if (strtolower($row[0]) != 'date' and $row[1] != 'Total' and $row[0] != '' and strtolower($row[7]) != 'Name') {
             AvromedData::create([
