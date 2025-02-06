@@ -78,9 +78,6 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue, WithEvent
                 }
             }
         } catch (\Exception $e) {
-            info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            info("Error processing row: " . json_encode($row));
-            info("Error message: " . $e->getMessage());
             return null; // Пропускаем проблемную строку
         }
     }
