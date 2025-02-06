@@ -4,6 +4,8 @@ namespace App\Orchid\Screens\Company;
 
 use App\Imports\AvromedImport;
 use App\Models\AvromedData;
+use App\Models\MainTabletMatrix;
+use App\Models\TabletMatrix;
 use App\Models\UploadedFile;
 use App\Orchid\Layouts\FileTable;
 use App\Orchid\Layouts\UploadFile;
@@ -93,6 +95,17 @@ class AvromedScreen extends Screen
     public function upload(Request $request)
     {
         $file = UploadedFile::where(['which_depo' => 'avromed'])->where(['uploaded' => 0]);
+        $tablets_avro = TabletMatrix::whereNotNull('avromed');
+        foreach ($tablets_avro->get() as $tablet){
+            $matrix_tablet = MainTabletMatrix::where(['avromed' => $tablet->avromed]);
+            if ($matrix_tablet->exists()) {
+                $matrix_tablet = $matrix_tablet->get()->first();
+                $matrix_tablet->avromed = preg_replace('/\(.*/', '', $tablet->avromed);
+                $matrix_tablet->save();
+            }
+            $tablet->avromed = preg_replace('/\(.*/', '', $tablet->avromed);
+            $tablet->save();
+        }
         if ($file->exists()){
             foreach ($file->get() as $file){
                 Excel::import(new AvromedImport($file->file_id), storage_path($file->file_url));
