@@ -6,6 +6,7 @@ use App\Models\AvromedData;
 use App\Models\TabletMatrix;
 use App\Models\UploadedFile;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -38,42 +39,49 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue, WithEvent
 
     public function model(array $row)
     {
-        if (empty(array_filter($row)) or strtolower($row[0]) == 'date' or $row[1] == 'Total') {
-            return null;
-        }
-        $text = preg_replace('/\s*\([^)]*\)\s*/', ' ', $row[7]); // Удаляем скобки и пробелы вокруг
-        $text = trim(preg_replace('/\s+/', ' ', $text));
-        $text2 = str_replace('№', '№', $text);
-        if (strtolower($row[0]) != 'date' and $row[1] != 'Total' and $row[0] != '' and strtolower($row[7]) != 'Name') {
-            AvromedData::create([
-                'branch' => $row[1],
-                'date' => $row[0],
-                'main_parent' => $row[2],
-                'main_supplier' => $row[3],
-                'region' => $row[4],
-                'region_name' => $row[5] != null ? $row[5] : $row[4],
-                'aptek_name' => $row[6],
-                'tablet_name' => $text,
-                'supervisor' => $row[8],
-                'item_code' => $row[9],
-                'client_code' => $row[10],
-                'sales_qty' => $row[11],
-                'new_sales' => $row[12],
-                'uploaded_file_id' => $this->file_id,
+        try {
+            if (empty(array_filter($row)) or strtolower($row[0]) == 'date' or $row[1] == 'Total') {
+                return null;
+            }
+            $text = preg_replace('/\s*\([^)]*\)\s*/', ' ', $row[7]); // Удаляем скобки и пробелы вокруг
+            $text = trim(preg_replace('/\s+/', ' ', $text));
+            $text2 = str_replace('№', '№', $text);
+            if (strtolower($row[0]) != 'date' and $row[1] != 'Total' and $row[0] != '' and strtolower($row[7]) != 'Name') {
+                AvromedData::create([
+                    'branch' => $row[1],
+                    'date' => $row[0],
+                    'main_parent' => $row[2],
+                    'main_supplier' => $row[3],
+                    'region' => $row[4],
+                    'region_name' => $row[5] != null ? $row[5] : $row[4],
+                    'aptek_name' => $row[6],
+                    'tablet_name' => $text,
+                    'supervisor' => $row[8],
+                    'item_code' => $row[9],
+                    'client_code' => $row[10],
+                    'sales_qty' => $row[11],
+                    'new_sales' => $row[12],
+                    'uploaded_file_id' => $this->file_id,
 //                'sale_date' => Carbon::make($row[0]),
-                'uploaded_date' => Carbon::now(),
-            ]);
-            $tablets = TabletMatrix::where(['avromed' => $text2]);
-            if (!$tablets->exists()) {
-                TabletMatrix::create([
-                $this->firm => $text2,
+                    'uploaded_date' => Carbon::now(),
                 ]);
-            } elseif ($row[$this->tabletNameRow] != 'Name') {
-                $tablets->get();
-                foreach ($tablets as $tablet) {
-                    $tablet->update([$this->firm => $text2]);
+                $tablets = TabletMatrix::where(['avromed' => $text2]);
+                if (!$tablets->exists()) {
+                    TabletMatrix::create([
+                        $this->firm => $text2,
+                    ]);
+                } elseif ($row[$this->tabletNameRow] != 'Name') {
+                    $tablets->get();
+                    foreach ($tablets as $tablet) {
+                        $tablet->update([$this->firm => $text2]);
+                    }
                 }
             }
+        } catch (\Exception $e) {
+            info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            info("Error processing row: " . json_encode($row));
+            info("Error message: " . $e->getMessage());
+            return null; // Пропускаем проблемную строку
         }
     }
 
