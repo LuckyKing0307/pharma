@@ -248,7 +248,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
     /**
      * Обновляет данные о продажах.
      */
-    private function updateSalesData($data, $month, $salesQty, $price)
+    private function updateSalesData(&$data, $month, $salesQty, $price)
     {
         $data[$month] += floatval($salesQty);
         $data[$month + 20] += floatval($salesQty) * $price;
