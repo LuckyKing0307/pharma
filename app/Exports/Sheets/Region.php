@@ -188,6 +188,11 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             }
             if ($depo == 'avromed') {
                 $results[] = $model::where($where)->get();
+                foreach ($results as $result) {
+                    if (isset($result->uploaded_file_id) and $result->uploaded_file_id===212){
+                        info($result->tablet_name.' '.$result->sales_qty);
+                    }
+                }
                 continue;
             }
             if (count($orWhere)>=1){
