@@ -187,8 +187,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                 $where[] = ['region_name', '=', $region->$depo];
             }
             if ($depo == 'avromed') {
-                $results[] = $model::where($where)->orWhere([['tablet_name', 'like', '%'.$tablet->avromed.'%'], ['main_parent', '=', $region->avromed_extra]])->get();
-                info(json_encode($model::where($where)->orWhere([['tablet_name', 'like', '%'.$tablet->avromed.'%'], ['main_parent', '=', $region->avromed_extra]])->toSql()));
+                $results[] = $model::where($where)->get();
                 continue;
             }
             if (count($orWhere)>=1){
@@ -251,8 +250,8 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
      */
     private function updateSalesData(&$data, $month, $salesQty, $price)
     {
-        $data[$month] += floatval($salesQty);
-        $data[$month + 20] += floatval($salesQty) * $price;
+        $data[$month] += intval($salesQty);
+        $data[$month + 20] += intval($salesQty) * floatval($price);
 
         // Лимит продаж
         if ($data[$month] > 80000) {
