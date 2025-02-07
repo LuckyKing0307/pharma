@@ -167,9 +167,9 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             $model = $this->depo_models[$depo];
             $tablet_name = $tablet->$depo;
 
-            if (empty($tablet_name) or $region->$depo=='' or $region->$depo==null) {
-                continue;
-            }
+//            if (empty($tablet_name) or $region->$depo=='' or $region->$depo==null) {
+//                continue;
+//            }
 
             $where = [['tablet_name', 'like', '%'.$tablet_name.'%']];
             $orWhere = [];
@@ -188,11 +188,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             }
             if ($depo == 'avromed') {
                 $results[] = $model::where($where)->get();
-                foreach ($model::where($where)->get() as $result) {
-                    if ($result->uploaded_file_id==212){
-                        info("select sum(sales_qty) from avromed_data where tablet_name like'".$result->tablet_name."' and region_name = ".$region->$depo);
-                    }
-                }
+                info($tablet->main_name);
                 continue;
             }
             if (count($orWhere)>=1){
