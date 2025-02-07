@@ -167,6 +167,9 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             $model = $this->depo_models[$depo];
             $tablet_name = $tablet->$depo;
 
+            if (empty($tablet_name) or $region->$depo=='' or $region->$depo==null) {
+                continue;
+            }
             $where = [['tablet_name', 'like', '%'.$tablet_name.'%']];
             if ($depo == 'avromed') {
                 $results[] = $model::where($where)->get();
@@ -177,9 +180,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                 }
                 continue;
             }
-//            if (empty($tablet_name) or $region->$depo=='' or $region->$depo==null) {
-//                continue;
-//            }
+
 
             $orWhere = [];
             if (is_array(json_decode($region->$depo, 1))) {
