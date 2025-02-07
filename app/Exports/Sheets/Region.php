@@ -167,21 +167,11 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             $model = $this->depo_models[$depo];
             $tablet_name = $tablet->$depo;
 
-            if (empty($tablet_name) or $region->$depo=='' or $region->$depo==null) {
+            if ($region->$depo=='' or $region->$depo==null) {
                 continue;
             }
+
             $where = [['tablet_name', 'like', '%'.$tablet_name.'%']];
-            if ($depo == 'avromed') {
-                $results[] = $model::where($where)->get();
-                foreach ($model::where($where)->get() as $result) {
-                    if ($result->uploaded_file_id==212){
-                        info($tablet_name);
-                    }
-                }
-                continue;
-            }
-
-
             $orWhere = [];
             if (is_array(json_decode($region->$depo, 1))) {
                 foreach (json_decode($region->$depo, 1) as $radez_aptek) {
@@ -195,6 +185,10 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                 }
             } else {
                 $where[] = ['region_name', '=', $region->$depo];
+            }
+            if ($depo == 'avromed') {
+                $results[] = $model::where($where)->orWhere([['tablet_name', 'like', '%'.$tablet->avromed.'%'], ['main_parent', '=', $region->avromed]])->get();
+                continue;
             }
             if (count($orWhere)>=1){
                 $model = $model::where($orWhere[0]);
@@ -256,8 +250,8 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
      */
     private function updateSalesData(&$data, $month, $salesQty, $price)
     {
-        $data[$month] += intval($salesQty);
-        $data[$month + 20] += intval($salesQty) * floatval($price);
+        $data[$month] += floatval($salesQty);
+        $data[$month + 20] += floatval($salesQty) * $price;
 
         // Лимит продаж
         if ($data[$month] > 80000) {
