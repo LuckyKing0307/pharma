@@ -167,7 +167,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             $model = $this->depo_models[$depo];
             $tablet_name = $tablet->$depo;
 
-            if ($region->$depo=='' or $region->$depo==null) {
+            if (empty($tablet_name) or $region->$depo=='' or $region->$depo==null) {
                 continue;
             }
 
@@ -248,7 +248,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
     /**
      * Обновляет данные о продажах.
      */
-    private function updateSalesData(&$data, $month, $salesQty, $price)
+    private function updateSalesData($data, $month, $salesQty, $price)
     {
         $data[$month] += floatval($salesQty);
         $data[$month + 20] += floatval($salesQty) * $price;
