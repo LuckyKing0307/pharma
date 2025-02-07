@@ -167,6 +167,15 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             $model = $this->depo_models[$depo];
             $tablet_name = $tablet->$depo;
 
+            if ($depo == 'avromed') {
+                $results[] = $model::where($where)->get();
+                foreach ($model::where($where)->get() as $result) {
+                    if ($result->uploaded_file_id==212){
+                        info($tablet_name);
+                    }
+                }
+                continue;
+            }
 //            if (empty($tablet_name) or $region->$depo=='' or $region->$depo==null) {
 //                continue;
 //            }
@@ -185,11 +194,6 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                 }
             } else {
                 $where[] = ['region_name', '=', $region->$depo];
-            }
-            if ($depo == 'avromed') {
-                $results[] = $model::where($where)->get();
-                info($tablet->main_name);
-                continue;
             }
             if (count($orWhere)>=1){
                 $model = $model::where($orWhere[0]);
