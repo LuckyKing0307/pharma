@@ -16,6 +16,7 @@ use App\Models\ZeytunData;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -27,9 +28,10 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
 {
 
     use Exportable;
-    public $regions_array = [0=>["a"=>'', 'name'=>'Лекарства']];
+
+    public $regions_array = [0 => ["a" => '', 'name' => 'Лекарства']];
     public $tablets = [0 => [
-        'a' =>'',
+        'a' => '',
         'tablet_name' => 'SKU',
         'price' => 'Net prices',
         1 => 'Jan',
@@ -54,13 +56,13 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
         27 => 'Jul',
         28 => 'Avg',
         29 => 'Sep',
-        30 =>  'Oct',
-        31 =>  'Nov',
-        32 =>  'Dec',
+        30 => 'Oct',
+        31 => 'Nov',
+        32 => 'Dec',
         'all_sales' => 'Total qty.',
         'all_sales_price' => 'Closing stock',
-    ],1 => [
-        'a' =>'',
+    ], 1 => [
+        'a' => '',
         'tablet_name' => '',
         'price' => '',
         1 => 0,
@@ -105,11 +107,12 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
     public $region;
     public $filter;
 
-    public function __construct($region,$filter)
+    public function __construct($region, $filter)
     {
         $this->region = $region;
         $this->filter = $filter;
     }
+
     /**
      * @return array
      */
@@ -118,101 +121,51 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
     {
         $tablets = MainTabletMatrix::all();
         $region = $this->region;
+        $region_tablet_array = $this->getTabletsFromDepo($region);
         foreach ($tablets as $tablet) {
             $tablet_data = [
                 'a' => '',
                 'tablet_name' => $tablet->mainname,
                 'price' => $tablet->price,
             ];
-
-            $results = $this->processTablet($tablet,$region);
-            foreach ($results as $result){
-                $tablet_data = $this->getFile($tablet_data, $result);
-            }
-            $tablet_data['all_sales'] = 0;
-            for ($i = 1; $i <= 12; $i++) {
-                if (isset($tablet_data[$i])){
-                    $tablet_data['all_sales'] =  $tablet_data['all_sales']+$tablet_data[$i];
-                }
-            }
             $price = str_replace(',', '.', $tablet_data['price']);
-            $tablet_data['all_sales_price'] = floatval($price)*floatval($tablet_data['all_sales']);
-            $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales']+$tablet_data['all_sales'];
-            $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price']+(floatval($price)*floatval($tablet_data['all_sales']));
-            $this->tablets[] = $tablet_data;
-            for ($i = 1; $i<=12; $i++){
-                if (isset($tablet_data[$i]) and isset($this->tablets[1][$i])){
-                    $this->tablets[1][$i] += $tablet_data[$i];
-                    $this->tablets[1][$i+20] += $tablet_data[$i+20];
-                }
-            }
-        }
-        return collect($this->tablets);
-    }
-
-
-    private function processTablet($tablet,$region): array
-    {
-        $results = [];
-
-        $depo_list = in_array('all', $this->filter['depo'])
-            ? array_keys($this->depo_models)
-            : $this->filter['depo'];
-
-        foreach ($depo_list as $depo) {
-            if (!isset($this->depo_models[$depo])) {
-                continue;
-            }
-
-            $model = $this->depo_models[$depo];
-            $tablet_name = $tablet->$depo;
-
-            if (empty($tablet_name) or $region->$depo=='' or $region->$depo==null) {
-                continue;
-            }
-
-            $where = [['tablet_name', 'like', '%'.$tablet_name.'%']];
-            $orWhere = [];
-            if (is_array(json_decode($region->$depo, 1))) {
-                foreach (json_decode($region->$depo, 1) as $radez_aptek) {
-                        if (is_array(json_decode($tablet_name, 1))) {
-                            foreach (json_decode($tablet_name, 1) as $tabs){
-                                $orWhere[] = [['aptek_name', '=', $radez_aptek],['tablet_name', '=', '%'.$tabs.'%']];
-                            }
-                        }else{
-                            $orWhere[] = [['aptek_name', '=', $radez_aptek],['tablet_name', '=', '%'.$tablet_name.'%']];
-                        }
-                }
-            } else {
-                $where[] = ['region_name', '=', $region->$depo];
-            }
-            if ($depo == 'avromed') {
-                $results[] = $model::where($where)->orWhere([['tablet_name', 'like', '%'.$tablet->avromed.'%'], ['main_parent', '=', $region->avromed]])->get();
-                continue;
-            }
-            if (count($orWhere)>=1){
-                $model = $model::where($orWhere[0]);
-                if (count($orWhere)>1){
-                    foreach ($orWhere as $orwhere){
-                        if ($orWhere[0]!=$orwhere){
-                            $model = $model->orWhere($orwhere);
+            foreach ($region_tablet_array as $region_tablet => $region_tablet_data) {
+                foreach ($region_tablet_data as $region_month => $region_month_data) {
+                    $search = $tablet->$region_tablet;
+                    $tab_array = json_decode($region_month_data, 1);
+                    foreach ($tab_array as $tableted) {
+                        if (str_replace(' ', '', $tableted['tablet_name']) == str_replace(' ', '', $search)) {
+                            $tablet_data = $this->updateSalesData($tablet_data, $region_month, $tableted['total_sales'], floatval($price));
                         }
                     }
                 }
-            }else{
-                $where[] = ['aptek_name', '!=', ''];
-                $model = $model::where($where);
             }
-            $results[] = $model->get();
-
+            $tablet_data['all_sales'] = 0;
+            for ($i = 1; $i <= 12; $i++) {
+                if (isset($tablet_data[$i])) {
+                    $tablet_data['all_sales'] = $tablet_data['all_sales'] + $tablet_data[$i];
+                }
+            }
+            $tablet_data['all_sales_price'] = floatval($price) * floatval($tablet_data['all_sales']);
+            $this->tablets[1]['all_sales'] = $this->tablets[1]['all_sales'] + $tablet_data['all_sales'];
+            $this->tablets[1]['all_sales_price'] = $this->tablets[1]['all_sales_price'] + (floatval($price) * floatval($tablet_data['all_sales']));
+            $this->tablets[] = $tablet_data;
+            for ($i = 1; $i <= 12; $i++) {
+                if (isset($tablet_data[$i]) and isset($this->tablets[1][$i])) {
+                    $this->tablets[1][$i] += $tablet_data[$i];
+                    $this->tablets[1][$i + 20] += $tablet_data[$i + 20];
+                }
+            }
         }
-
-        return $results;
+        info($this->tablets);
+        return collect($this->tablets);
     }
 
-    public function getFile($data, $tablets)
+    /**
+     * Обновляет данные о продажах.
+     */
+    private function updateSalesData($data, $month, $salesQty, $price)
     {
-        // Инициализация ключей
         foreach (range(1, 13) as $i) {
             $data[$i] = $data[$i] ?? 0;
         }
@@ -220,36 +173,6 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             $data[$i] = $data[$i] ?? 0;
         }
         $data[13] = '';
-        $price = floatval(str_replace(',', '.', $data['price']));
-
-        foreach ($tablets as $tablet) {
-            $fileQuery = UploadedFile::where('file_id', $tablet->uploaded_file_id);
-
-            // Применение фильтров
-            if (!empty($this->filter['from'])) {
-                $fileQuery->where('uploaded_date', '>=', $this->filter['from']);
-            }
-            if (!empty($this->filter['to'])) {
-                $fileQuery->where('uploaded_date', '<=', $this->filter['to']);
-            }
-
-            if ($fileQuery->exists()) {
-                $file = $fileQuery->first();
-                $month = $file->uploaded_date
-                    ? Carbon::make($file->uploaded_date)->month
-                    : Carbon::now()->month;
-                $this->updateSalesData($data, $month, $tablet->sales_qty, $price);
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * Обновляет данные о продажах.
-     */
-    private function updateSalesData(&$data, $month, $salesQty, $price)
-    {
         $data[$month] += floatval($salesQty);
         $data[$month + 20] += floatval($salesQty) * $price;
 
@@ -258,6 +181,44 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             $data[$month] = 0;
             $data[$month + 20] = 0;
         }
+        return $data;
+    }
+
+    public function getTabletsFromDepo($region)
+    {
+        $depo_data = [];
+        $depos = in_array('all', $this->filter['depo'])
+            ? array_keys($this->depo_models)
+            : $this->filter['depo'];
+        foreach ($depos as $depo) {
+            $model = $this->depo_models[$depo];
+            $fileQuery = UploadedFile::where('which_depo', $depo);
+            if (!empty($this->filter['from'])) {
+                $fileQuery->where('uploaded_date', '>=', $this->filter['from']);
+            }
+            if (!empty($this->filter['to'])) {
+                $fileQuery->where('uploaded_date', '<=', $this->filter['to']);
+            }
+            if ($fileQuery->exists()) {
+                $files = $fileQuery->get();
+                foreach ($files as $file) {
+                    $month = $file->uploaded_date
+                        ? Carbon::make($file->uploaded_date)->month
+                        : Carbon::now()->month;
+                    $depo_resalts = $model::query()->select('tablet_name', DB::raw('SUM(sales_qty) AS total_sales'))
+                        ->where('uploaded_file_id', $file->file_id)
+                        ->where('region_name', $region->$depo);
+                        if (is_array(json_decode($region->$depo, 1))) {
+                            foreach (json_decode($region->$depo, 1) as $radez_aptek) {
+                                $depo_resalts->where('aptek_name', $radez_aptek);
+                            }
+                        }
+                    $depo_data[$depo][$month] = $depo_resalts->groupBy('tablet_name')
+                        ->get();
+                }
+            }
+        }
+        return $depo_data;
     }
 
     /**
