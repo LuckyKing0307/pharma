@@ -159,7 +159,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
         $depo_list = in_array('all', $this->filter['depo'])
             ? array_keys($this->depo_models)
             : $this->filter['depo'];
-        info($tablet->avromed);
+        info($tablet->avromed.' '.$region);
         foreach ($depo_list as $depo) {
             if (!isset($this->depo_models[$depo])) {
                 continue;
