@@ -116,6 +116,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
 
     public function collection(): Collection
     {
+//        select sum(sales_qty) from avromed_data where tablet_name like 'Торвазин плюс 40/10 № 30' and region_name = Nərimanov
         $tablets = MainTabletMatrix::all();
         $region = $this->region;
         foreach ($tablets as $tablet) {
@@ -158,7 +159,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
         $depo_list = in_array('all', $this->filter['depo'])
             ? array_keys($this->depo_models)
             : $this->filter['depo'];
-
+        info($tablet->avromed);
         foreach ($depo_list as $depo) {
             if (!isset($this->depo_models[$depo])) {
                 continue;
