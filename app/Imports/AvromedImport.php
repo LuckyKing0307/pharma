@@ -46,6 +46,7 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue, WithEvent
             $text = preg_replace('/\s*\([^)]*\)\s*/', ' ', $row[7]); // Удаляем скобки и пробелы вокруг
             $text = trim(preg_replace('/\s+/', ' ', $text));
             $text2 = str_replace('№', '№', $text);
+            $region_name = str_replace('E','a',$row[5]);
             if (strtolower($row[0]) != 'date' and $row[1] != 'Total' and $row[0] != '' and strtolower($row[7]) != 'Name') {
                 AvromedData::create([
                     'branch' => $row[1],
@@ -53,7 +54,7 @@ class AvromedImport implements ToModel, WithChunkReading, ShouldQueue, WithEvent
                     'main_parent' => $row[2],
                     'main_supplier' => $row[3],
                     'region' => $row[4],
-                    'region_name' => $row[5] != null ? $row[5] : $row[4],
+                    'region_name' => $region_name != null ? $region_name : $row[4],
                     'aptek_name' => $row[6],
                     'tablet_name' => $text,
                     'supervisor' => $row[8],
