@@ -217,8 +217,12 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                         }
                         if($reg==''){
                             $depo_resalts->where(function ($query) use ($reg_depo,$depo,$reg) {
-                                $query->where('region_name', $reg_depo)
-                                    ->orWhere('main_parent', $reg);
+                                if ($reg_depo==''){
+                                    $query->where('main_parent', $reg);
+                                }else{
+                                    $query->where('region_name', $reg_depo)
+                                        ->orWhere('main_parent', $reg);
+                                }
                             });
                         }else{
                             $depo_resalts->where('region_name', $reg_depo);
