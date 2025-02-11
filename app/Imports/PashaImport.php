@@ -28,19 +28,14 @@ class PashaImport implements ToModel, WithStartRow
     */
     public function model(array $row)
     {
-        $region_name = '';
-        if ($region_name==''){
-            if (strpos($row[1],'PASHA-K')!==false){
-                $region_name=str_replace('PASHA-K ','',$row[1]);
-            }else{
-                $region_name = $row[2];
-            }
-        }
+        $region_name=str_replace('PASHA-K ','',$row[1]);
+        $region_name=str_replace(' ','',$region_name);
         PashaData::create([
             'aptek_name' => $row[1],
             'tablet_name' => $row[0],
             'qty' => isset($row[4]) ? $row[4] : '',
-            'region_name' => $region_name,
+            'region_name' => $row[2],
+            'main_parent' => $region_name,
             'sales_qty' => $row[3],
             'uploaded_file_id' => $this->file_id,
             'uploaded_date' => Carbon::now(),

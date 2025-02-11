@@ -157,7 +157,6 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                 }
             }
         }
-        info($this->tablets);
         return collect($this->tablets);
     }
 
@@ -192,7 +191,8 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             : $this->filter['depo'];
         foreach ($depos as $depo) {
             $model = $this->depo_models[$depo];
-            $fileQuery = UploadedFile::where('which_depo', $depo);
+            $depo_file = str_replace('-k','',$depo);
+            $fileQuery = UploadedFile::where('which_depo', $depo_file);
             if (!empty($this->filter['from'])) {
                 $fileQuery->where('uploaded_date', '>=', $this->filter['from']);
             }
@@ -206,8 +206,24 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                         ? Carbon::make($file->uploaded_date)->month
                         : Carbon::now()->month;
                     $depo_resalts = $model::query()->select('tablet_name', DB::raw('SUM(sales_qty) AS total_sales'))
-                        ->where('uploaded_file_id', $file->file_id)
-                        ->where('region_name', $region->$depo);
+                        ->where('uploaded_file_id', $file->file_id);
+                    if ($depo!='avromed' or $depo=='pasha-k') {
+                        $depo_resalts->where('region_name', $region->$depo);
+                    }else{
+                        $reg_depo = $region->$depo;
+                        $reg = $region->avromed_extra;
+                        if ($depo == 'pasha-k'){
+                            $reg = $region->avromed_extra;
+                        }
+                        if($reg==''){
+                            $depo_resalts->where(function ($query) use ($reg_depo,$depo,$reg) {
+                                $query->where('region_name', $reg_depo)
+                                    ->orWhere('main_parent', $reg);
+                            });
+                        }else{
+                            $depo_resalts->where('region_name', $reg_depo);
+                        }
+                    }
                         if (is_array(json_decode($region->$depo, 1))) {
                             foreach (json_decode($region->$depo, 1) as $radez_aptek) {
                                 $depo_resalts->where('aptek_name', $radez_aptek);

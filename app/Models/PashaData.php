@@ -19,5 +19,6 @@ class PashaData extends Model
         'ost_qty',
         'uploaded_file_id',
         'uploaded_date',
+        'main_parent',
     ];
 }

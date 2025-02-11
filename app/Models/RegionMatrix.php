@@ -19,6 +19,7 @@ class RegionMatrix extends Model
         'aztt',
         'epidbiomed',
         'pasha-k',
+        'pasha_extra',
         'radez',
         'sonar',
         'zeytun',
