@@ -55,6 +55,9 @@ class RegionMatrixEdit extends Rows
             Relation::make('region.pasha-k')
                 ->fromModel(PashaData::class, 'region_name', 'region_name')
                 ->title('Pasha k')->nullable(),
+            Relation::make('region.pasha_extra')
+                ->fromModel(AvromedData::class, 'main_parent', 'main_parent')
+                ->title('Pasha Extra')->nullable(),
             Relation::make('region.radez.')
                 ->fromModel(RadezData::class, 'aptek_name', 'aptek_name')
                 ->title('Radez')->nullable()->multiple(),

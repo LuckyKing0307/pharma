@@ -102,7 +102,7 @@ class RegionMatrixScreen extends Screen
             $data['avromed'] = $data['avromed_extra'];
         }
         $data['epidbiomed'] = isset($data['epidbiomed']) ? json_encode($data['epidbiomed']) : '';
-            $data['radez'] = isset($data['radez']) ? json_encode($data['radez']) : '';
+        $data['radez'] = isset($data['radez']) ? json_encode($data['radez']) : '';
         info($data);
         RegionMatrix::find($data['id'])->update($data);
     }
