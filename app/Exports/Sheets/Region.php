@@ -210,7 +210,6 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                     if ($depo!='avromed' or $depo=='pasha-k') {
                         if (is_array(json_decode($region->$depo, 1))) {
                             $depo_resalts->where('aptek_name', '%'.json_decode($region->$depo, 1)[0].'%');
-                            info(json_decode($region->$depo, 1));
                             foreach (json_decode($region->$depo, 1) as $radez_aptek) {
                                 if(json_decode($region->$depo, 1)[0]!=$radez_aptek){
                                     $depo_resalts->orWhere([['aptek_name','like', '%'.$radez_aptek.'%'],['uploaded_file_id','=', $file->file_id]]);
@@ -219,8 +218,6 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                         }else{
                             $depo_resalts->where('region_name', $region->$depo);
                         }
-                        info('asdffdas');
-                        info($depo_resalts->toSql());
                     }else{
                         $reg_depo = $region->$depo;
                         if ($depo == 'pasha-k'){
@@ -239,6 +236,7 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                     }
                     $depo_data[$depo][$month] = $depo_resalts->groupBy('tablet_name')
                         ->get();
+
                 }
             }
         }
