@@ -208,31 +208,35 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                     $depo_resalts = $model::query()->select('tablet_name', DB::raw('SUM(sales_qty) AS total_sales'))
                         ->where('uploaded_file_id', $file->file_id);
                     if ($depo!='avromed' or $depo=='pasha-k') {
-                        $depo_resalts->where('region_name', $region->$depo);
+                        if (is_array(json_decode($region->$depo, 1))) {
+                            $depo_resalts->where('aptek_name', '%'.json_decode($region->$depo, 1)[0].'%');
+                            info(json_decode($region->$depo, 1));
+                            foreach (json_decode($region->$depo, 1) as $radez_aptek) {
+                                if(json_decode($region->$depo, 1)[0]!=$radez_aptek){
+                                    $depo_resalts->orWhere([['aptek_name','like', '%'.$radez_aptek.'%'],['uploaded_file_id','=', $file->file_id]]);
+                                }
+                            }
+                        }else{
+                            $depo_resalts->where('region_name', $region->$depo);
+                        }
+                        info('asdffdas');
+                        info($depo_resalts->toSql());
                     }else{
                         $reg_depo = $region->$depo;
-                        $reg = $region->avromed_extra;
                         if ($depo == 'pasha-k'){
+                            $reg = $region->pasha_extra;
+                        }else{
                             $reg = $region->avromed_extra;
                         }
-                        if($reg==''){
+                        if($reg){
                             $depo_resalts->where(function ($query) use ($reg_depo,$depo,$reg) {
-                                if ($reg_depo==''){
-                                    $query->where('main_parent', $reg);
-                                }else{
-                                    $query->where('region_name', $reg_depo)
-                                        ->orWhere('main_parent', $reg);
-                                }
+                                return $query->where('region_name','like', '%'.$reg_depo.'%')
+                                    ->orWhere('main_parent','like', '%'.$reg.'%');
                             });
                         }else{
-                            $depo_resalts->where('region_name', $reg_depo);
+                            $depo_resalts->where('region_name','ilike', '%'.$reg_depo.'%');
                         }
                     }
-                        if (is_array(json_decode($region->$depo, 1))) {
-                            foreach (json_decode($region->$depo, 1) as $radez_aptek) {
-                                $depo_resalts->where('aptek_name', $radez_aptek);
-                            }
-                        }
                     $depo_data[$depo][$month] = $depo_resalts->groupBy('tablet_name')
                         ->get();
                 }
