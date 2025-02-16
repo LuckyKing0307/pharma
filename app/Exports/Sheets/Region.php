@@ -226,12 +226,16 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                             $reg = $region->avromed_extra;
                         }
                         if($reg){
+                            info('asdsdasd');
+                            info($reg);
                             $depo_resalts->where(function ($query) use ($reg_depo,$depo,$reg) {
+                                info($query->where('region_name','like', '%'.$reg_depo.'%')
+                                    ->orWhere('main_parent','like', '%'.$reg.'%')->toSql());
                                 return $query->where('region_name','like', '%'.$reg_depo.'%')
                                     ->orWhere('main_parent','like', '%'.$reg.'%');
                             });
                         }else{
-                            $depo_resalts->where('region_name','ilike', '%'.$reg_depo.'%');
+                            $depo_resalts->where('region_name','like', '%'.$reg_depo.'%');
                         }
                     }
                     $depo_data[$depo][$month] = $depo_resalts->groupBy('tablet_name')
