@@ -190,6 +190,9 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             ? array_keys($this->depo_models)
             : $this->filter['depo'];
         foreach ($depos as $depo) {
+            if ($region->$depo==''){
+                continue;
+            }
             $model = $this->depo_models[$depo];
             $depo_file = str_replace('-k','',$depo);
             $fileQuery = UploadedFile::where('which_depo', $depo_file);
