@@ -208,16 +208,11 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                     $month = $file->uploaded_date
                         ? Carbon::make($file->uploaded_date)->month
                         : Carbon::now()->month;
-                    $depo_resalts = $model::query()->select('tablet_name', DB::raw('SUM(sales_qty) AS total_sales'))
-                        ->where('uploaded_file_id', $file->file_id);
+                    $depo_resalts = $model::query()->select('tablet_name', DB::raw('SUM(sales_qty) AS total_sales'))->where('uploaded_file_id', $file->file_id);
                     if ($depo!='avromed' or $depo=='pasha-k') {
                         if (is_array(json_decode($region->$depo, 1))) {
-                            $depo_resalts->where('aptek_name', '%'.json_decode($region->$depo, 1)[0].'%');
-                            foreach (json_decode($region->$depo, 1) as $radez_aptek) {
-                                if(json_decode($region->$depo, 1)[0]!=$radez_aptek){
-                                    $depo_resalts->orWhere([['aptek_name','like', '%'.$radez_aptek.'%'],['uploaded_file_id','=', $file->file_id]]);
-                                }
-                            }
+                            $depo_resalts->whereIn('aptek_name', json_decode($region->$depo, 1));
+                            info($depo_resalts->toSql());
                         }else{
                             $depo_resalts->where('region_name', $region->$depo);
                         }
@@ -229,8 +224,6 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                             $reg = $region->avromed_extra;
                         }
                         if($reg){
-                            info('asdsdasd');
-                            info($reg);
                             $depo_resalts->where(function ($query) use ($reg_depo,$depo,$reg) {
                                 info($query->where('region_name','like', '%'.$reg_depo.'%')
                                     ->orWhere('main_parent','like', '%'.$reg.'%')->toSql());
