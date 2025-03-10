@@ -177,7 +177,6 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
 
             $model = $this->depo_models[$depo];
             $tablet_name = $tablet->$depo;
-
             if (empty($tablet_name)) {
                 continue;
             }
@@ -192,35 +191,36 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
             }
 
             if ($depo === 'aztt') {
-                if (count($orWhere)>=1){
+                if (count($orWhere) >= 1) {
                     $res = $model::where($orWhere[0]);
-                    if (count($orWhere)>1){
-                        foreach ($orWhere as $orwhere){
-                            if ($orWhere[0]!=$orwhere){
+                    if (count($orWhere) > 1) {
+                        foreach ($orWhere as $orwhere) {
+                            if ($orWhere[0] != $orwhere) {
                                 $res = $res->orWhere($orwhere);
                             }
                         }
                     }
                     $results[] = $res->get();
                     continue;
-                }else{
+                } else {
                     $where[] = ['aptek_name', '!=', ''];
                     $results[] = $model::where($where)->get();
                     continue;
                 }
-            } elseif (in_array($depo, ['radez', 'zeytun'])) {
-                if (count($orWhere)>=1){
+            } elseif ($depo == 'radez' or $depo == 'zeytun') {
+                if (count($orWhere) >= 1) {
                     $res = $model::where($orWhere[0]);
-                    if (count($orWhere)>1){
-                        foreach ($orWhere as $orwhere){
-                            if ($orWhere[0]!=$orwhere){
+                    if (count($orWhere) > 1) {
+                        foreach ($orWhere as $orwhere) {
+                            if ($orWhere[0] != $orwhere) {
                                 $res = $res->orWhere($orwhere);
                             }
                         }
                     }
                     $results[] = $res->get();
                     continue;
-                }else{
+                } else {
+                    $where[] = ['aptek_name', '=', null];
                     $results[] = $model::where($where)->get();
                     continue;
                 }
@@ -228,17 +228,17 @@ class Tablet implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                 $results[] = $model::where($where)->whereNull('region_name')->get();
                 continue;
             }
-            if (count($orWhere)>=1){
+            if (count($orWhere) >= 1) {
                 $res = $model::where($orWhere[0]);
-                if (count($orWhere)>1){
-                    foreach ($orWhere as $orwhere){
-                        if ($orWhere[0]!=$orwhere){
+                if (count($orWhere) > 1) {
+                    foreach ($orWhere as $orwhere) {
+                        if ($orWhere[0] != $orwhere) {
                             $res = $res->orWhere($orwhere);
                         }
                     }
                 }
                 $results[] = $res->get();
-            }else{
+            } else {
                 $results[] = $model::where($where)->get();
             }
         }
