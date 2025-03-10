@@ -212,7 +212,6 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                     if ($depo!='avromed' or $depo=='pasha-k') {
                         if (is_array(json_decode($region->$depo, 1))) {
                             $depo_resalts->whereIn('aptek_name', json_decode($region->$depo, 1));
-                            info($depo_resalts->toSql());
                         }else{
                             $depo_resalts->where('region_name', $region->$depo);
                         }
