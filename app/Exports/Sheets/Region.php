@@ -211,10 +211,15 @@ class Region implements FromCollection, ShouldQueue, ShouldAutoSize, WithTitle
                     $depo_resalts = $model::query()->select('tablet_name', DB::raw('SUM(sales_qty) AS total_sales'))->where('uploaded_file_id', $file->file_id);
                     if ($depo!='avromed' or $depo=='pasha-k') {
                         if (is_array(json_decode($region->$depo, 1))) {
-                            $depo_resalts->whereIn('aptek_name', json_decode($region->$depo, 1));
+                            if ($depo=='radez'){
+                                $depo_resalts->whereIn('aptek_name', json_decode($region->$depo, 1));
+                            }else{
+                                $depo_resalts->whereIn('region_name', json_decode($region->$depo, 1));
+                            }
                         }else{
                             $depo_resalts->where('region_name', $region->$depo);
                         }
+                        info($depo_resalts->toSql());
                     }else{
                         $reg_depo = $region->$depo;
                         if ($depo == 'pasha-k'){
